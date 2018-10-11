@@ -4,6 +4,7 @@ namespace Test;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use ryanwhowe\KeyValueStore\Manager;
 use ryanwhowe\KeyValueStore\Store;
 
 class storeTest extends \PHPUnit\Framework\TestCase {
@@ -56,7 +57,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     public function GroupNameFormatting($groupNameTest, $expectedOutput)
     {
-        $test = new Store($groupNameTest, self::$connection);
+        $test = Store::create($groupNameTest, self::$connection);
         $result = $test->getGrouping();
         $this->assertEquals($expectedOutput, $result, "Group Name Formatting Error");
     }
@@ -84,7 +85,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     public function SingleValueOverridden($grouping, $key, $testValue, $overrideValue)
     {
-        $store = new Store($grouping, self::$connection);
+        $store = Store::create($grouping, self::$connection);
         $store->setSingleValue($key, $testValue);
         $store->setSingleValue($key, $overrideValue);
         $result = $store->getSingleValue($key);
@@ -100,19 +101,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     protected function setUp()
     {
-
-        $stmt = self::$connection->prepare(/** @lang SQLite */
-            '
-            CREATE TABLE `ValueStore` (
-              `id` INTEGER PRIMARY KEY AUTOINCREMENT ,
-              `grouping` VARCHAR(100) DEFAULT NULL,
-              `key` VARCHAR(100) DEFAULT NULL,
-              `value` VARCHAR(300) DEFAULT NULL,
-              `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              `value_created` DATETIME NOT NULL 
-            );
-        ');
-        $stmt->execute();
+        Manager::create(self::$connection)->createTable();
     }
 
     /**
@@ -122,8 +111,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     protected function tearDown()
     {
-        self::$connection->exec('DROP TABLE `ValueStore`;');
-        self::$connection->close();
+        Manager::create(self::$connection)->dropTable();
     }
 
 }
