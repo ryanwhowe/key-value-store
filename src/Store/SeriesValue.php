@@ -9,7 +9,7 @@
 namespace ryanwhowe\KeyValueStore\Store;
 
 
-class SeriesValue extends \ryanwhowe\KeyValueStore\KeyValue {
+class SeriesValue extends MultiValue {
     /**
      * Insert a new value into a series set
      *

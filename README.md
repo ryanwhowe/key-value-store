@@ -16,4 +16,4 @@ This extends the key/value store in several ways
 - [ ] Test crossing types and see what happens
 - [ ] Settle on a response for the setters
 - [ ] Settle on a response for the getters
-- [ ] Split out the Series functionality to an abstract base for the Series and Distinct classes
+- [x] Split out the Series functionality to an abstract base for the Series and Distinct classes

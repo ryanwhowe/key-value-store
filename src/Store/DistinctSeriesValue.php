@@ -9,7 +9,7 @@
 namespace ryanwhowe\KeyValueStore\Store;
 
 
-class DistinctSeriesValue extends \ryanwhowe\KeyValueStore\KeyValue {
+class DistinctSeriesValue extends MultiValue {
 
     /**
      * Set a distinct series value, this will check to see if the key, value pair has already been submitted,

@@ -13,9 +13,9 @@ namespace ryanwhowe\KeyValueStore;
  *
  * @author  Ryan W Howe <ryanwhowe@gmail.com>
  * @package ryanwhowe\KeyValueStore
- * @todo    convert the simple queries into query building
  */
-class KeyValue {
+abstract class KeyValue {
+
     /**
      * @var \Doctrine\DBAL\Connection
      */
@@ -37,19 +37,29 @@ class KeyValue {
      *
      * @param string $grouping
      * @param \Doctrine\DBAL\Connection $connection
-     * @return self
+     * @return static
      * @throws \Exception on invalid connection
      */
     public static function create($grouping, \Doctrine\DBAL\Connection $connection)
     {
-        return new self($grouping, $connection);
+        return new static($grouping, $connection);
     }
 
-    public static function formatGrouping($grouping)
+    /**
+     * Format the grouping name
+     *
+     * @param $grouping
+     * @return mixed
+     */
+    protected function formatGrouping($grouping)
     {
-        return \str_replace(array(' '), '', $grouping);
+        return \str_replace(array(' '), '_', $grouping);
     }
 
+    /**
+     * Get the Grouping name for the class instance
+     * @return string
+     */
     public function getGrouping()
     {
         return $this->grouping;
@@ -62,12 +72,13 @@ class KeyValue {
      */
     public function getAllKeys()
     {
-
-        $sql = 'SELECT DISTINCT `key` FROM `ValueStore` WHERE `grouping` = :grouping;';
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_COLUMN);
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('DISTINCT key')
+            ->from('ValueStore')
+            ->where('`grouping` = :grouping')
+            ->setParameter('grouping', $this->getGrouping());
+        $stmt = $qb->execute();
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -94,68 +105,7 @@ class KeyValue {
         return $stmt->fetchAll();
     }
 
-    /**
-     * Query the database for the most recent series value from a grouping
-     *
-     * @param $key
-     * @return array
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function getSeriesLastValue($key)
-    {
-        $sql = "
-            SELECT
-                `grouping`,
-                `key`,
-                `value`,
-                `last_update`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-            ORDER BY 
-                value_created DESC 
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->execute();
-        $return = $stmt->fetch();
-        $return['value_created'] = $this->getSeriesCreateDate($key);
-        return $return;
-    }
 
-    /**
-     * Get all the values associated with a series key for the grouping.
-     *
-     * @param $key
-     * @return array
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function getSeriesSet($key)
-    {
-        $sql = "
-            SELECT
-                `grouping`,
-                `key`,
-                `value`,
-                `last_update`,
-                `value_created`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-            ORDER BY 
-                value_created DESC 
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
 
     /**
      * Insert a new value in the database, either as a new series entry or a new single value
@@ -166,39 +116,16 @@ class KeyValue {
      */
     protected function insert($key, $value)
     {
-        $sql = "INSERT INTO `ValueStore` (`grouping`, `key`, `value`, `value_created`) VALUES
-                (:grouping, :key, :value, CURRENT_TIMESTAMP);";
-        $stmt = $this->connection->prepare($sql);
+        $qb = $this->connection->createQueryBuilder();
+        $qb->insert('ValueStore')
+            ->setValue('`grouping`', '?')
+            ->setValue('`key`', '?')
+            ->setValue('`value`', '?')
+            ->setValue('`value_created`', 'CURRENT_TIMESTAMP')
+            ->setParameter(0, $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(1, $key, \PDO::PARAM_STR)
+            ->setParameter(2, $value, \PDO::PARAM_STR);
 
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
-        $stmt->execute();
+        $qb->execute();
     }
-
-    /**
-     * Get the first value_created for a series collection
-     *
-     * @param $key
-     * @return bool|string
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function getSeriesCreateDate($key)
-    {
-        $sql = "
-            SELECT
-                MIN(`value_created`)
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_COLUMN);
-    }
-
 }
