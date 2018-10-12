@@ -12,10 +12,10 @@ namespace ryanwhowe\KeyValueStore;
  * separate from other stores through the use of the 'grouping' term that is set at instantiation.
  *
  * @author  Ryan W Howe <ryanwhowe@gmail.com>
- * @package ryanwhowe\Store
+ * @package ryanwhowe\KeyValueStore
  * @todo    convert the simple queries into query building
  */
-class Store {
+class KeyValue {
     /**
      * @var \Doctrine\DBAL\Connection
      */

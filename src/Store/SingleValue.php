@@ -9,7 +9,7 @@
 namespace ryanwhowe\KeyValueStore\Store;
 
 
-class SingleValue extends \ryanwhowe\KeyValueStore\Store {
+class SingleValue extends \ryanwhowe\KeyValueStore\KeyValue {
 
     /**
      * Set a new single grouping/key's value, if it is present, otherwise create a new entry for it

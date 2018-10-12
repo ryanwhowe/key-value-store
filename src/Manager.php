@@ -8,7 +8,11 @@
 
 namespace ryanwhowe\KeyValueStore;
 
-
+/**
+ * Class Manager
+ *
+ * @package ryanwhowe\KeyValueStore
+ */
 class Manager {
 
     /**

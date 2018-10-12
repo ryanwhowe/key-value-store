@@ -5,7 +5,7 @@ namespace Test;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use ryanwhowe\KeyValueStore\Manager;
-use ryanwhowe\KeyValueStore\Store;
+use ryanwhowe\KeyValueStore\KeyValue;
 
 class storeTest extends \PHPUnit\Framework\TestCase {
 
@@ -57,7 +57,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     public function GroupNameFormatting($groupNameTest, $expectedOutput)
     {
-        $test = Store::create($groupNameTest, self::$connection);
+        $test = KeyValue::create($groupNameTest, self::$connection);
         $result = $test->getGrouping();
         $this->assertEquals($expectedOutput, $result, "Group Name Formatting Error");
     }
@@ -85,7 +85,7 @@ class storeTest extends \PHPUnit\Framework\TestCase {
      */
     public function SingleValueOverridden($grouping, $key, $testValue, $overrideValue)
     {
-        $store = Store::create($grouping, self::$connection);
+        $store = KeyValue::create($grouping, self::$connection);
         $store->setSingleValue($key, $testValue);
         $store->setSingleValue($key, $overrideValue);
         $result = $store->getSingleValue($key);
