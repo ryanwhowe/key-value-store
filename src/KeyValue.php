@@ -53,7 +53,7 @@ abstract class KeyValue {
      */
     protected function formatGrouping($grouping)
     {
-        return \str_replace(array(' '), '_', $grouping);
+        return \str_replace(array(' '), '_', trim($grouping));
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class KeyValue {
         $qb->select('DISTINCT key')
             ->from('ValueStore')
             ->where('`grouping` = :grouping')
-            ->setParameter('grouping', $this->getGrouping());
+            ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR);
         $stmt = $qb->execute();
         return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
@@ -93,8 +93,8 @@ abstract class KeyValue {
         SELECT 
             :grouping as `grouping`,
             keyset.`key`,
-            (SELECT `value` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY `last_update` DESC LIMIT 1) as `value`,
-            (SELECT `last_update` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY `last_update` DESC LIMIT 1) as `last_update` 
+            (SELECT `value` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY id DESC LIMIT 1) as `value`,
+            (SELECT `last_update` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY id DESC LIMIT 1) as `last_update` 
         FROM
             (SELECT DISTINCT `key` FROM `ValueStore` WHERE `grouping` = :grouping) as keyset
         ;
@@ -104,8 +104,6 @@ abstract class KeyValue {
         $stmt->execute();
         return $stmt->fetchAll();
     }
-
-
 
     /**
      * Insert a new value in the database, either as a new series entry or a new single value
@@ -126,6 +124,22 @@ abstract class KeyValue {
             ->setParameter(1, $key, \PDO::PARAM_STR)
             ->setParameter(2, $value, \PDO::PARAM_STR);
 
+        $qb->execute();
+    }
+
+    /**
+     * Delete all data for a given key in a instantiated grouping
+     *
+     * @param $key
+     */
+    public function delete($key)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->delete('ValueStore')
+            ->where('`grouping` = :grouping')
+            ->where('`key` = :key')
+            ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter('key', $key, \PDO::PARAM_STR);
         $qb->execute();
     }
 }

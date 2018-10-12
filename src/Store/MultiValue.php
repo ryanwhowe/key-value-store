@@ -33,14 +33,16 @@ abstract class MultiValue extends \ryanwhowe\KeyValueStore\KeyValue {
                 `grouping` = :grouping AND 
                 `key` = :key
             ORDER BY 
-                value_created DESC 
+                id DESC 
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->execute();
         $return = $stmt->fetch();
-        $return['value_created'] = $this->getSeriesCreateDate($key);
+        if (is_array($return)) {
+            $return['value_created'] = $this->getSeriesCreateDate($key);
+        }
         return $return;
     }
 
