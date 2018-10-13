@@ -3,7 +3,7 @@
  * This file contains the source code for the Store class
  */
 
-namespace ryanwhowe\KeyValueStore;
+namespace RyanWHowe\KeyValueStore;
 
 /**
  * Class Store
@@ -12,7 +12,7 @@ namespace ryanwhowe\KeyValueStore;
  * separate from other stores through the use of the 'grouping' term that is set at instantiation.
  *
  * @author  Ryan W Howe <ryanwhowe@gmail.com>
- * @package ryanwhowe\KeyValueStore
+ * @package RyanWHowe\KeyValueStore
  */
 abstract class KeyValue {
 

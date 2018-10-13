@@ -6,11 +6,11 @@
  * @since  2018-10-12
  */
 
-namespace Test;
+namespace Test\KeyValue;
 
-use ryanwhowe\KeyValueStore\Store\SingleValue;
+use RyanWHowe\KeyValueStore\KeyValue\Single;
 
-class SingleValueTest extends DataTransaction {
+class SingleTest extends DataTransaction {
 
     /**
      * @test
@@ -19,7 +19,7 @@ class SingleValueTest extends DataTransaction {
      */
     public function getAllKeys()
     {
-        $test = SingleValue::create('SingleValueGetAllKeys', self::$connection);
+        $test = Single::create('SingleValueGetAllKeys', self::$connection);
         $test->set('key1', 'value1');
         $test->set('key1', 'value2');
         $test->set('key2', 'value2');
@@ -53,7 +53,7 @@ class SingleValueTest extends DataTransaction {
             array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value6')
         );
 
-        $singleValue = SingleValue::create($testGroup, self::$connection);
+        $singleValue = Single::create($testGroup, self::$connection);
         foreach ($expected as $item) {
             $singleValue->set($item['key'], $item['value']);
         }
@@ -75,10 +75,10 @@ class SingleValueTest extends DataTransaction {
     public function create()
     {
         $testGrouping = 'SingleValueCreate';
-        $singleValue = SingleValue::create($testGrouping, self::$connection);
+        $singleValue = Single::create($testGrouping, self::$connection);
         $resultGrouping = $singleValue->getGrouping();
         $this->assertEquals($testGrouping, $resultGrouping);
-        $this->assertInstanceOf('ryanwhowe\KeyValueStore\Store\SingleValue', $singleValue);
+        $this->assertInstanceOf('RyanWHowe\KeyValueStore\KeyValue\Single', $singleValue);
     }
 
     /**
@@ -101,7 +101,7 @@ class SingleValueTest extends DataTransaction {
             'value3'
         );
 
-        $singleValue = SingleValue::create($testGroup, self::$connection);
+        $singleValue = Single::create($testGroup, self::$connection);
         foreach ($testValues as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
@@ -144,7 +144,7 @@ class SingleValueTest extends DataTransaction {
      */
     public function GetGrouping($testGroup, $expectedGroup, $expectedResult)
     {
-        $singleValue = SingleValue::create($testGroup, self::$connection);
+        $singleValue = Single::create($testGroup, self::$connection);
         $resultGroup = $singleValue->getGrouping();
         if ($expectedResult) {
             $this->assertEquals($expectedGroup, $resultGroup);
@@ -173,7 +173,7 @@ class SingleValueTest extends DataTransaction {
             'value3'
         );
 
-        $singleValue = SingleValue::create($testGroup, self::$connection);
+        $singleValue = Single::create($testGroup, self::$connection);
         foreach ($testValues as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
@@ -192,7 +192,7 @@ class SingleValueTest extends DataTransaction {
     {
         $testGroup = 'SingleValueDelete';
         $key = 'KeyValue';
-        $singleValue = SingleValue::create($testGroup, self::$connection);
+        $singleValue = Single::create($testGroup, self::$connection);
         $singleValue->set($key, 'value');
         $singleValue->delete($key);
         $result = $singleValue->get($key);

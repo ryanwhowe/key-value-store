@@ -6,12 +6,12 @@
  * @since  2018-10-11
  */
 
-namespace ryanwhowe\KeyValueStore;
+namespace RyanWHowe\KeyValueStore;
 
 /**
  * Class Manager
  *
- * @package ryanwhowe\KeyValueStore
+ * @package RyanWHowe\KeyValueStore
  */
 class Manager {
 

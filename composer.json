@@ -1,5 +1,5 @@
 {
-    "name": "ryanwhowe/php-keyvaluestore",
+    "name": "RyanWHowe/keyvaluestore",
     "description": "A Key/Value storage setter and getter library with a database backend",
     "type": "library",
     "require": {
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ryanwhowe\\KeyValueStore\\": "src"
+            "RyanWHowe\\KeyValueStore\\": "src"
         }
     },
     "autoload-dev": {
@@ -26,7 +26,7 @@
     "authors": [
         {
             "name": "Ryan W. Howe",
-            "email": "ryanwhowe@gmail.com"
+            "email": "RyanWHowe@gmail.com"
         }
     ],
     "minimum-stability": "stable"

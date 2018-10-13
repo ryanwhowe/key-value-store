@@ -10,7 +10,7 @@ namespace Test;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
-use ryanwhowe\KeyValueStore\Manager;
+use RyanWHowe\KeyValueStore\Manager;
 
 class ManagerTest extends \PHPUnit\Framework\TestCase {
 
@@ -40,7 +40,7 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
     public function testCreate()
     {
         $test = Manager::create(self::$connection);
-        $this->assertInstanceOf('ryanwhowe\KeyValueStore\Manager', $test);
+        $this->assertInstanceOf('RyanWHowe\KeyValueStore\Manager', $test);
     }
 
     public function testCreateTable()
@@ -61,13 +61,13 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
         $test = Manager::create(self::$connection);
         $test->createTable();
         $expected = array();
-        $singleValue = \ryanwhowe\KeyValueStore\Store\SingleValue::create('Test1', self::$connection);
+        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test1', self::$connection);
         $expected[] = 'Test1';
         $singleValue->set('Key', 'Value');
-        $singleValue = \ryanwhowe\KeyValueStore\Store\SingleValue::create('Test2', self::$connection);
+        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test2', self::$connection);
         $expected[] = 'Test2';
         $singleValue->set('Key', 'Value');
-        $singleValue = \ryanwhowe\KeyValueStore\Store\SingleValue::create('Test3', self::$connection);
+        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test3', self::$connection);
         $expected[] = 'Test3';
         $singleValue->set('Key', 'Value');
         $result = $test->getAllGroupings();

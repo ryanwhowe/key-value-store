@@ -6,14 +6,14 @@
  * @since  2018-10-12
  */
 
-namespace Test;
+namespace Test\KeyValue;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\TestCase;
-use ryanwhowe\KeyValueStore\Manager;
+use RyanWHowe\KeyValueStore\Manager;
 
-class DataTransaction extends TestCase {
+abstract class DataTransaction extends TestCase {
     /**
      * @var \Doctrine\DBAL\Connection
      */

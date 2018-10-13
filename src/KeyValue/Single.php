@@ -1,15 +1,15 @@
 <?php
 /**
- * This file contains the definition for the SingleValue class
+ * This file contains the definition for the Single class
  *
  * @author Ryan Howe
  * @since  2018-10-11
  */
 
-namespace ryanwhowe\KeyValueStore\Store;
+namespace RyanWHowe\KeyValueStore\KeyValue;
 
 
-class SingleValue extends \ryanwhowe\KeyValueStore\KeyValue {
+class Single extends \RyanWHowe\KeyValueStore\KeyValue {
 
     /**
      * Set a new single grouping/key's value, if it is present, otherwise create a new entry for it

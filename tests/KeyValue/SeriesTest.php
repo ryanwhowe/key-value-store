@@ -6,11 +6,11 @@
  * @since  2018-10-12
  */
 
-namespace Test;
+namespace Test\KeyValue;
 
-use ryanwhowe\KeyValueStore\Store\SeriesValue;
+use RyanWHowe\KeyValueStore\KeyValue\Series;
 
-class SeriesValueTest extends DataTransaction {
+class SeriesTest extends DataTransaction {
 
     /**
      * @test
@@ -21,13 +21,13 @@ class SeriesValueTest extends DataTransaction {
         $testGrouping = 'SeriesValueSet';
         $key = 'key1';
         $value = '';
-        $seriesValue = SeriesValue::create($testGrouping, self::$connection);
+        $seriesValue = Series::create($testGrouping, self::$connection);
         $testSet = array(
             'value1',
             'value2',
             'value3',
-            'value4',
-            'value5',
+            'value3',
+            'value1',
             'anotherValue'
         );
         foreach ($testSet as $item) {
@@ -50,13 +50,13 @@ class SeriesValueTest extends DataTransaction {
         $testGrouping = 'SeriesValueGetSet';
         $key = 'key1';
         $expected = array();
-        $seriesValue = SeriesValue::create($testGrouping, self::$connection);
+        $seriesValue = Series::create($testGrouping, self::$connection);
         $testSet = array(
             'value1',
             'value2',
             'value3',
-            'value4',
-            'value5'
+            'value2',
+            'value1'
         );
         foreach ($testSet as $item) {
             $seriesValue->set($key, $item);
@@ -78,7 +78,7 @@ class SeriesValueTest extends DataTransaction {
      */
     public function GetAllKeys()
     {
-        $seriesValue = SeriesValue::create('SeriesValueGetAllKeys', self::$connection);
+        $seriesValue = Series::create('SeriesValueGetAllKeys', self::$connection);
         $seriesValue->set('key1', 'value1');
         $seriesValue->set('key1', 'value2');
         $seriesValue->set('key2', 'value2');
@@ -101,10 +101,10 @@ class SeriesValueTest extends DataTransaction {
     public function create()
     {
         $testGroupName = 'SeriesValueCreate';
-        $seriesValue = SeriesValue::create($testGroupName, self::$connection);
+        $seriesValue = Series::create($testGroupName, self::$connection);
         $resultGroupName = $seriesValue->getGrouping();
         $this->assertEquals($testGroupName, $resultGroupName);
-        $this->assertInstanceOf('ryanwhowe\KeyValueStore\Store\SeriesValue', $seriesValue);
+        $this->assertInstanceOf('RyanWHowe\KeyValueStore\KeyValue\Series', $seriesValue);
     }
 
     /**
@@ -131,7 +131,7 @@ class SeriesValueTest extends DataTransaction {
             array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value7'),
         );
 
-        $seriesValue = SeriesValue::create($testGroup, self::$connection);
+        $seriesValue = Series::create($testGroup, self::$connection);
         $lastSet = array();
         foreach ($testData as $item) {
             $seriesValue->set($item['key'], $item['value']);
@@ -168,7 +168,7 @@ class SeriesValueTest extends DataTransaction {
         $testGrouping = 'SeriesValueGet';
         $key = 'key1';
         $value = '';
-        $seriesValue = SeriesValue::create($testGrouping, self::$connection);
+        $seriesValue = Series::create($testGrouping, self::$connection);
         $testSet = array(
             'value1',
             'value2',
@@ -187,16 +187,45 @@ class SeriesValueTest extends DataTransaction {
         $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $value), $result);
     }
 
+    public function groupingTestProvider()
+    {
+        return array(
+            array('GroupName', 'GroupName', true),
+            array('GroupName1', 'GroupName1', true),
+            array('Group Name', 'Group_Name', true),
+            array('G r o u p N a m e ', 'G_r_o_u_p_N_a_m_e', true),
+            array(' GroupName', 'GroupName', true),
+            array(' GroupName ', 'GroupName', true),
+            array('GroupName 12', 'GroupName_12', true),
+            array(' G r o u p N a m e 1 2 ', 'G_r_o_u_p_N_a_m_e_1_2', true),
+            array('GroupName', 'GroupName', true),
+
+            array(' GroupName', ' GroupName', false),
+            array('GroupName1 ', 'GroupName1 ', false),
+            array('Group Name', 'Group Name', false),
+            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
+            array(' GroupName', ' GroupName', false),
+            array(' GroupName ', ' GroupName ', false),
+            array('GroupName 12', 'GroupName 12', false),
+            array(' G r o u p N a m e 1 2 ', ' G r o u p N a m e 1 2 ', false),
+            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
+        );
+    }
+
     /**
      * @test
+     * @dataProvider groupingTestProvider
      * @throws \Exception
      */
-    public function getGrouping()
+    public function GetGrouping($testGroup, $expectedGroup, $expectedResult)
     {
-        $testGroupName = 'SeriesValueGetGrouping';
-        $seriesValue = SeriesValue::create($testGroupName, self::$connection);
-        $resultGroupName = $seriesValue->getGrouping();
-        $this->assertEquals($testGroupName, $resultGroupName);
+        $singleValue = Series::create($testGroup, self::$connection);
+        $resultGroup = $singleValue->getGrouping();
+        if ($expectedResult) {
+            $this->assertEquals($expectedGroup, $resultGroup);
+        } else {
+            $this->assertNotEquals($expectedGroup, $resultGroup);
+        }
     }
 
     /**
@@ -209,7 +238,7 @@ class SeriesValueTest extends DataTransaction {
         $testGroup = 'SeriesValueDelete';
         $key = 'KeyValue';
         $values = array('value1', 'value2', 'value3', 'value3', 'value2', 'value2', 'value1');
-        $seriesValue = SeriesValue::create($testGroup, self::$connection);
+        $seriesValue = Series::create($testGroup, self::$connection);
         foreach ($values as $value) {
             $seriesValue->set($key, $value);
         }

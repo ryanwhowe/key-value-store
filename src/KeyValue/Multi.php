@@ -1,15 +1,15 @@
 <?php
 /**
- * This file contains the definition for the MultiValue class
+ * This file contains the definition for the Multi class
  *
  * @author Ryan Howe
  * @since  2018-10-12
  */
 
-namespace ryanwhowe\KeyValueStore\Store;
+namespace RyanWHowe\KeyValueStore\KeyValue;
 
 
-abstract class MultiValue extends \ryanwhowe\KeyValueStore\KeyValue {
+abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
 
 
     /**

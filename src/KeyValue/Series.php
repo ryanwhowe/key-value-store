@@ -1,15 +1,15 @@
 <?php
 /**
- * This file contains the definition for the SeriesValue class
+ * This file contains the definition for the Series class
  *
  * @author Ryan Howe
  * @since  2018-10-11
  */
 
-namespace ryanwhowe\KeyValueStore\Store;
+namespace RyanWHowe\KeyValueStore\KeyValue;
 
 
-class SeriesValue extends MultiValue {
+class Series extends Multi {
     /**
      * Insert a new value into a series set
      *

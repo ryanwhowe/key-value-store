@@ -1,37 +1,31 @@
 <?php
 /**
- * This file contains the definition for the DistinctSeriesValue class
+ * This file contains the definition for the DistinctSeries class
  *
  * @author Ryan Howe
  * @since  2018-10-11
  */
 
-namespace ryanwhowe\KeyValueStore\Store;
+namespace RyanWHowe\KeyValueStore\KeyValue;
 
-
-class DistinctSeriesValue extends MultiValue {
+class DistinctSeries extends Multi {
 
     /**
      * Set a distinct series value, this will check to see if the key, value pair has already been submitted,
-     * if not it will insert the value, if so it will issue an update which should have no effect, but may
-     * eventually set an update column
+     * if not it will insert the value, if so it will issue an update which will update the last_updated timestamp
      *
      * @param $key
      * @param $value
-     * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {
-
         $id = $this->getId($key, $value);
         if ($id) {
             $this->update($id);
         } else {
             $this->insert($key, $value);
         }
-        $result = $this->get($key, $value);
-        return $result;
     }
 
     /**
@@ -77,35 +71,19 @@ class DistinctSeriesValue extends MultiValue {
      * Get the record associated with the specific key, value pair
      *
      * @param $key
-     * @param $value
      * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function get($key, $value)
+    public function get($key)
     {
-
-        $sql = "
-            SELECT
-                `grouping`,
-                `key`,
-                `value`,
-                `last_update`,
-                `value_created`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key AND 
-                `value` = :value
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->getSeriesLastValue($key);
     }
 
+    /**
+     * @param $key
+     * @return array
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function getSet($key)
     {
         return $this->getSeriesSet($key);
