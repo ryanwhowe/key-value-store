@@ -20,17 +20,30 @@ class Manager {
      */
     protected $connection;
 
+    /**
+     * Manager constructor.
+     *
+     * @param \Doctrine\DBAL\Connection $connection
+     */
     public function __construct(\Doctrine\DBAL\Connection $connection)
     {
         $this->connection = $connection;
     }
 
+    /**
+     * Static create method for single method chaining usage
+     *
+     * @param \Doctrine\DBAL\Connection $connection
+     * @return self
+     */
     public static function create(\Doctrine\DBAL\Connection $connection)
     {
         return new self($connection);
     }
 
     /**
+     * Get all groupings that are stored in the database
+     *
      * @param \Doctrine\DBAL\Connection $connection
      * @return array
      * @throws \Exception
@@ -44,6 +57,10 @@ class Manager {
         return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 
+    /**
+     * Create the production table
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function createTable()
     {
         $sql = "CREATE TABLE `ValueStore` (
@@ -54,9 +71,14 @@ class Manager {
               `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
               `value_created` DATETIME NOT NULL 
             );";
-        $stmt = $this->connection->exec($sql);
+        $this->connection->exec($sql);
     }
 
+    /**
+     * Drop the database table used for storing the data
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function dropTable()
     {
         $sql = "DROP TABLE `ValueStore`";

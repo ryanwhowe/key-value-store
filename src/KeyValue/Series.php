@@ -15,24 +15,10 @@ class Series extends Multi {
      *
      * @param $key
      * @param $value
-     * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {
         $this->insert($key, $value);
-        $result = $this->getSeriesLastValue($key);
-        return $result;
     }
-
-    public function get($key)
-    {
-        return $this->getSeriesLastValue($key);
-    }
-
-    public function getSet($key)
-    {
-        return $this->getSeriesSet($key);
-    }
-
 }

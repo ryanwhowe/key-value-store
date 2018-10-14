@@ -39,6 +39,14 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
      * @throws \Exception
      */
@@ -55,6 +63,20 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::delete
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -74,6 +96,19 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGroupingSet
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -125,6 +160,20 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -132,6 +181,7 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGrouping = 'DistinctSeriesValueSet';
         $key = 'key1';
+        $expected_value = '';
         $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         $testSet = array(
@@ -160,6 +210,19 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSet
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -197,6 +260,18 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -220,6 +295,20 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -227,6 +316,7 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGrouping = 'DistinctSeriesValueSet';
         $key = 'key1';
+        $expected_value = '';
         $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         $testSet = array(
@@ -255,6 +345,14 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @throws \Exception
      */
     public function create()

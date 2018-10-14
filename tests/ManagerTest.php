@@ -37,12 +37,25 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
         self::$connection = DriverManager::getConnection(self::$database_config, new Configuration());
     }
 
+    /**
+     * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     */
     public function testCreate()
     {
         $test = Manager::create(self::$connection);
         $this->assertInstanceOf('RyanWHowe\KeyValueStore\Manager', $test);
     }
 
+    /**
+     * @test
+     * @throws \Doctrine\DBAL\DBALException
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     */
     public function testCreateTable()
     {
         $test = Manager::create(self::$connection);
@@ -54,6 +67,20 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
     }
 
     /**
+     * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::getAllGroupings
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::create
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @throws \Exception
      */
     public function testGetAllGroupings()
@@ -75,6 +102,14 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @test
+     * @covers \RyanWHowe\KeyValueStore\Manager::create
+     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function testDropTable()
     {
         $test = Manager::create(self::$connection);

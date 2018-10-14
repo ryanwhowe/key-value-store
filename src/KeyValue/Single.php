@@ -8,7 +8,14 @@
 
 namespace RyanWHowe\KeyValueStore\KeyValue;
 
-
+/**
+ * Class Single
+ *
+ * The single value class is the classic key/value store usage.  A key will have a value set, which can be overwritten
+ * or deleted.
+ *
+ * @package RyanWHowe\KeyValueStore\KeyValue
+ */
 class Single extends \RyanWHowe\KeyValueStore\KeyValue {
 
     /**
@@ -16,7 +23,6 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
      *
      * @param $key
      * @param $value
-     * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
@@ -27,28 +33,6 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
         } else {
             $this->insert($key, $value);
         }
-        $result = $this->get($key);
-        return $result;
-    }
-
-    /**
-     * Get the id value for a specific grouping, key combo, also as a check to see if the data already
-     * exists in the table
-     *
-     * @param  $key
-     * @return bool|string
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function getId($key)
-    {
-        $sql = "SELECT `id` FROM `ValueStore` WHERE `grouping` = :grouping AND `key` = :key ;";
-        $stmt = $this->connection->prepare($sql);
-
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
-        $stmt->execute();
-
-        return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**

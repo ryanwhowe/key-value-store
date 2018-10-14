@@ -26,6 +26,12 @@ abstract class KeyValue {
      */
     protected $grouping;
 
+    /**
+     * KeyValue constructor.  This is set to private to force instantiation through the static create method
+     *
+     * @param $grouping
+     * @param $connection
+     */
     private function __construct($grouping, $connection)
     {
         $this->grouping = self::formatGrouping($grouping);
@@ -33,7 +39,7 @@ abstract class KeyValue {
     }
 
     /**
-     * Static create method
+     * Static create method for single method chaining
      *
      * @param string $grouping
      * @param \Doctrine\DBAL\Connection $connection
@@ -46,7 +52,8 @@ abstract class KeyValue {
     }
 
     /**
-     * Format the grouping name
+     * Format the grouping name, eliminate spaces, replacing them with '_' and trim the name for leading and trailing
+     * white space
      *
      * @param $grouping
      * @return mixed
@@ -66,9 +73,9 @@ abstract class KeyValue {
     }
 
     /**
-     * Get all keys associated with the grouping that the class was instantiated as
+     * Get all keys associated with the grouping that are stored in the database.
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @return array
      */
     public function getAllKeys()
     {
@@ -82,7 +89,8 @@ abstract class KeyValue {
     }
 
     /**
-     * Get the last updated values for all keys contained in a grouping set
+     * Get the all values and keys associated with the grouping set.  For any Series based values the single, most
+     * recent, last_updated value will be returned with the key.
      *
      * @return array
      * @throws \Doctrine\DBAL\DBALException
@@ -93,8 +101,8 @@ abstract class KeyValue {
         SELECT 
             :grouping as `grouping`,
             keyset.`key`,
-            (SELECT `value` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY id DESC LIMIT 1) as `value`,
-            (SELECT `last_update` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY id DESC LIMIT 1) as `last_update` 
+            (SELECT `value` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY last_update DESC, id DESC LIMIT 1) as `value`,
+            (SELECT `last_update` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY last_update DESC, id DESC LIMIT 1) as `last_update` 
         FROM
             (SELECT DISTINCT `key` FROM `ValueStore` WHERE `grouping` = :grouping) as keyset
         ;
@@ -110,7 +118,6 @@ abstract class KeyValue {
      *
      * @param $key
      * @param $value
-     * @throws \Doctrine\DBAL\DBALException
      */
     protected function insert($key, $value)
     {
@@ -128,7 +135,7 @@ abstract class KeyValue {
     }
 
     /**
-     * Delete all data for a given key in a instantiated grouping
+     * Delete all rows in the database for a given key in a instantiated grouping
      *
      * @param $key
      */
@@ -141,5 +148,31 @@ abstract class KeyValue {
             ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR)
             ->setParameter('key', $key, \PDO::PARAM_STR);
         $qb->execute();
+    }
+
+    /**
+     * Get the id value for a specific grouping, key combo, also as a check to see if the data already
+     * exists in the table
+     *
+     * @param  $key
+     * @return bool|string
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function getId($key, $value = null)
+    {
+        $sql = "SELECT `id` FROM `ValueStore` WHERE `grouping` = :grouping AND `key` = :key ";
+        if(null !== $value){
+            $sql .= ' AND `value` = :value';
+        }
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
+        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        if(null !== $value){
+            $stmt->bindValue(":value", $value, \PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
 }
