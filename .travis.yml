@@ -9,14 +9,14 @@ php:
 
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -qq php-sqlite3
+- sudo apt-get install -y php-sqlite
 
 before_script:
 - travis_retry composer self-update
 - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
-- vendor/bin/phpunit --connfiguration phpunit.xml tests --teamcity
+- vendor/bin/phpunit --configuration phpunit.xml tests --teamcity
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
