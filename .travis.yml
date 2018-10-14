@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: required
 php:
 - '5.6'
 - '5.7'
@@ -9,7 +9,7 @@ php:
 
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -y php-sqlite3
+- sudo apt-get install -qq php-sqlite3
 
 before_script:
 - travis_retry composer self-update
