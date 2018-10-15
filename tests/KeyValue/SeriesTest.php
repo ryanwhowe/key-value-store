@@ -26,23 +26,17 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      */
-    public function set()
+    public function set($key, $values)
     {
-        $testGrouping = 'SeriesValueSet';
-        $key = 'key1';
+        $testGrouping = 'SeriesValueGet';
         $value = '';
         $seriesValue = Series::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value3',
-            'value1',
-            'anotherValue'
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $seriesValue->set($key, $item);
             $value = $item; //the expected output is the last value that was set in the series
         }
@@ -225,24 +219,18 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function get()
+    public function get($key, $values)
     {
         $testGrouping = 'SeriesValueGet';
-        $key = 'key1';
         $value = '';
         $seriesValue = Series::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'otherValue'
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $seriesValue->set($key, $item);
             $value = $item; //the expected output is the last value that was set in the series
         }

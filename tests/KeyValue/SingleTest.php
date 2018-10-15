@@ -138,26 +138,18 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function set()
+    public function set($key, array $values)
     {
         $testGroup = 'SingleValueSet';
-        $key = 'Key1';
         $expected = '';
-        $testValues = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'value6',
-            'value3'
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($testValues as $value) {
+        foreach ($values as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
         }
@@ -206,26 +198,18 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function get()
+    public function get($key, array $values)
     {
         $testGroup = 'SingleValueGet';
-        $key = 'Key1';
         $expected = '';
-        $testValues = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'value6',
-            'value3'
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($testValues as $value) {
+        foreach ($values as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
         }

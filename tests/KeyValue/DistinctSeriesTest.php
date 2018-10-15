@@ -149,24 +149,19 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function get()
+    public function get($key, $values)
     {
-        $testGrouping = 'DistinctSeriesValueSet';
-        $key = 'key1';
+        $testGrouping = 'DistinctSeriesValueGet';
         $expected_value = '';
         $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value2',
-            'value1',
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             if(!array_key_exists($item,$value)){
                 /* the last set distinct value needs to be captured */
@@ -284,24 +279,19 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function set()
+    public function set($key, $values)
     {
         $testGrouping = 'DistinctSeriesValueSet';
-        $key = 'key1';
         $expected_value = '';
         $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value2',
-            'value1',
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             if(!array_key_exists($item,$value)){
                 /* the last set distinct value needs to be captured */
@@ -312,7 +302,7 @@ class DistinctSeriesTest extends DataTransaction {
         unset($result['last_update']);
         unset($result['value_created']);
         foreach ($value as $set_value=>$item) {
-                $expected_value = $set_value;
+            $expected_value = $set_value;
         }
 
         $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $expected_value), $result);

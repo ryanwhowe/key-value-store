@@ -11,6 +11,10 @@ This extends the key/value store in several ways
   - This allows for only recording when a value changes as a logging method with the ability to retrieve the last value 
   set or the series
 
+### warning
+Keys are forced to be case-insensitive
+
 #### To Do (1.0)
 - [ ] Remove the grouping column from the results, it is redundant
 - [ ] Expand the tests to test multiple value key grouping sets
+- [ ] Force the Keys to be case-insensitive
