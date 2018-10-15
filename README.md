@@ -1,4 +1,4 @@
-# php-keyvaluestore [![Build Status](https://travis-ci.com/ryanwhowe/php-keyvaluestore.svg?branch=master)](https://travis-ci.com/ryanwhowe/php-keyvaluestore)
+# php-keyvaluestore [![Build Status](https://travis-ci.com/ryanwhowe/php-keyvaluestore.svg?branch=1.0)](https://travis-ci.com/ryanwhowe/php-keyvaluestore)
 This is a database backed key/value store setter and getter library with additional functionality
 
 This extends the key/value store in several ways
@@ -11,12 +11,6 @@ This extends the key/value store in several ways
   - This allows for only recording when a value changes as a logging method with the ability to retrieve the last value 
   set or the series
 
-#### To Do
-- [x] Split out the different types that can be stored
-- [x] Complete the code coverage documentation on the tests
+#### To Do (1.0)
+- [ ] Remove the grouping column from the results, it is redundant
 - [ ] Expand the tests to test multiple value key grouping sets
-- [ ] Documentation!
-- [ ] Test crossing types and see what happens (use one for setting and another for getting)
-- [x] Settle on a response for the setters
-- [x] Settle on a response for the getters
-- [x] Split out the Series functionality to an abstract base for the Series and Distinct classes
