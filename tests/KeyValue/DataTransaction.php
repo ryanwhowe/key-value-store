@@ -38,6 +38,37 @@ abstract class DataTransaction extends TestCase {
     }
 
     /**
+     * This test provider is for ensuring consisten test
+     *
+     * @return array
+     */
+    public function groupingTestProvider()
+    {
+        return array(
+            /* input Name, expected Name, should match expected */
+            array('GroupName', 'GroupName', true),
+            array('GroupName1', 'GroupName1', true),
+            array('Group Name', 'Group_Name', true),
+            array('G r o u p N a m e ', 'G_r_o_u_p_N_a_m_e', true),
+            array(' GroupName', 'GroupName', true),
+            array(' GroupName ', 'GroupName', true),
+            array('GroupName 12', 'GroupName_12', true),
+            array(' G r o u p N a m e 1 2 ', 'G_r_o_u_p_N_a_m_e_1_2', true),
+            array('GroupName', 'GroupName', true),
+
+            array(' GroupName', ' GroupName', false),
+            array('GroupName1 ', 'GroupName1 ', false),
+            array('Group Name', 'Group Name', false),
+            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
+            array(' GroupName', ' GroupName', false),
+            array(' GroupName ', ' GroupName ', false),
+            array('GroupName 12', 'GroupName 12', false),
+            array(' G r o u p N a m e 1 2 ', ' G r o u p N a m e 1 2 ', false),
+            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
+        );
+    }
+
+    /**
      * This is the setUp method, this will create the testing database connected to a local SQLite instanced in
      * memory, there should be no residual tables or test data to clean up from this class.
      *

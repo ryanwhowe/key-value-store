@@ -12,31 +12,6 @@ use RyanWHowe\KeyValueStore\KeyValue\DistinctSeries;
 
 class DistinctSeriesTest extends DataTransaction {
 
-    public function groupingTestProvider()
-    {
-        return array(
-            array('GroupName', 'GroupName', true),
-            array('GroupName1', 'GroupName1', true),
-            array('Group Name', 'Group_Name', true),
-            array('G r o u p N a m e ', 'G_r_o_u_p_N_a_m_e', true),
-            array(' GroupName', 'GroupName', true),
-            array(' GroupName ', 'GroupName', true),
-            array('GroupName 12', 'GroupName_12', true),
-            array(' G r o u p N a m e 1 2 ', 'G_r_o_u_p_N_a_m_e_1_2', true),
-            array('GroupName', 'GroupName', true),
-
-            array(' GroupName', ' GroupName', false),
-            array('GroupName1 ', 'GroupName1 ', false),
-            array('Group Name', 'Group Name', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-            array(' GroupName', ' GroupName', false),
-            array(' GroupName ', ' GroupName ', false),
-            array('GroupName 12', 'GroupName 12', false),
-            array(' G r o u p N a m e 1 2 ', ' G r o u p N a m e 1 2 ', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-        );
-    }
-
     /**
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
