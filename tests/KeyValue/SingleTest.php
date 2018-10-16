@@ -41,7 +41,7 @@ class SingleTest extends DataTransaction {
             foreach ($test['values'] as $value) {
                 $single->set($key, $value);
             }
-            $expected[] = $key;
+            $expected[] = \strtolower($key);
             $result = $single->getAllKeys();
             $this->assertEquals($expected, $result);
         }
@@ -80,7 +80,7 @@ class SingleTest extends DataTransaction {
                 $singleValue->set($key, $value);
                 $expected_value = $value; // we expect the last value set
             }
-            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
+            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -235,6 +235,7 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
      */
     public function delete()
     {
@@ -245,5 +246,27 @@ class SingleTest extends DataTransaction {
         $singleValue->delete($key);
         $result = $singleValue->get($key);
         $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @dataProvider nonUniqueKeyDataProvider
+     * @throws \Exception
+     */
+    public function uniqueKeys($testSet)
+    {
+        $testGroup = 'SingleUniqueKeys';
+        $single = Single::create($testGroup, self::$connection);
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $single->set($key, $value);
+            }
+            $expected[\strtolower($key)] = true;
+            $result = $single->getAllKeys();
+            $this->assertEquals(array_keys($expected), $result);
+        }
+
     }
 }

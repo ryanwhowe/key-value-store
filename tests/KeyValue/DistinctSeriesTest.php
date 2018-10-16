@@ -106,7 +106,7 @@ class DistinctSeriesTest extends DataTransaction {
             }
             $expected_values = \array_keys($expected_values);
             $expected_value = end($expected_values);
-            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
+            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
 
         }
 
@@ -162,7 +162,7 @@ class DistinctSeriesTest extends DataTransaction {
             $expected_value = $set_value;
         }
 
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $expected_value), $result);
+        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $expected_value), $result);
     }
 
     /**
@@ -188,24 +188,23 @@ class DistinctSeriesTest extends DataTransaction {
     public function getSet($testSet)
     {
         $testGrouping = 'DistinctSeriesValueGetSet';
-        $key = 'key1';
 
-        $seriesValue = DistinctSeries::create($testGrouping, self::$connection);
+        $distinctSeries = DistinctSeries::create($testGrouping, self::$connection);
 
         foreach ($testSet as $item) {
             $expected = array();
             $expected_values = array();
             $key = $item['key'];
             foreach ($item['values'] as $value) {
-                $seriesValue->set($key, $value);
+                $distinctSeries->set($key, $value);
                 if ( ! array_key_exists($value, $expected_values)) {
                     $expected_values[$value] = true;
                 }
             }
             foreach ($expected_values as $values => $item) {
-                $expected[] = array('grouping' => $testGrouping, 'key' => $key, 'value' => $values);
+                $expected[] = array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $values);
             }
-            $result = $seriesValue->getSet($key);
+            $result = $distinctSeries->getSet($key);
             // unset the timestamps, which will vary with time
             foreach ($result as &$item) {
                 unset($item['last_update']);
@@ -245,7 +244,7 @@ class DistinctSeriesTest extends DataTransaction {
             foreach ($test['values'] as $value) {
                 $distinctSeries->set($key, $value);
             }
-            $expected[] = $key;
+            $expected[] = \strtolower($key);
             $result = $distinctSeries->getAllKeys();
             $this->assertEquals($expected, $result);
         }
@@ -295,7 +294,7 @@ class DistinctSeriesTest extends DataTransaction {
             $expected_value = $set_value;
         }
 
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $expected_value), $result);
+        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $expected_value), $result);
     }
 
     /**

@@ -37,7 +37,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
@@ -68,7 +68,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-            $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+            $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
             $stmt->execute();
             $return = $stmt->fetch();
             if (is_array($return)) {
@@ -103,7 +103,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
     }
