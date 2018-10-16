@@ -101,23 +101,24 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function GetAllKeys()
+    public function GetAllKeys($testSet)
     {
         $seriesValue = Series::create('SeriesValueGetAllKeys', self::$connection);
-        $seriesValue->set('key1', 'value1');
-        $seriesValue->set('key1', 'value2');
-        $seriesValue->set('key2', 'value2');
-        $seriesValue->set('key2', 'value3');
-        $seriesValue->set('key3', 'value3');
-        $seriesValue->set('key3', 'value4');
-        $seriesValue->set('key4', 'value4');
-        $seriesValue->set('key4', 'value5');
-        $seriesValue->set('key5', 'value5');
-        $seriesValue->set('key5', 'value6');
-        $expected = array('key1', 'key2', 'key3', 'key4', 'key5');
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $seriesValue->set($key, $value);
+            }
+            $expected[] = $key;
+            $result = $seriesValue->getAllKeys();
+            $this->assertEquals($expected, $result);
+        }
         $result = $seriesValue->getAllKeys();
         $this->assertEquals($expected, $result);
     }
@@ -156,46 +157,27 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGroupingSet
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getGroupingSet()
+    public function getGroupingSet($testSet)
     {
         $testGroup = 'SeriesValueGetGroupingSet';
-
-        $testData = array(
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value1'),
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value6'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value7'),
-        );
-
-        $seriesValue = Series::create($testGroup, self::$connection);
-        $lastSet = array();
-        foreach ($testData as $item) {
-            $seriesValue->set($item['key'], $item['value']);
-            $lastSet[$item['key']] = $item['value'];
-        }
-
-        // the last set value for each key is the expected output
+        $singleValue = Series::create($testGroup, self::$connection);
         $expected = array();
-        foreach ($lastSet as $key => $value) {
-            $expected[] = array(
-                'grouping' => $testGroup,
-                'key'      => $key,
-                'value'    => $value
-            );
+        $expected_value = '';
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $singleValue->set($key, $value);
+                $expected_value = $value; // we expect the last value set
+            }
+            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
         }
 
-        $result = $seriesValue->getGroupingSet();
+        $result = $singleValue->getGroupingSet();
 
         foreach ($result as &$item) {
             // We are removing the last_update, this is a timestamp and is not testable

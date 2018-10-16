@@ -103,6 +103,67 @@ abstract class DataTransaction extends TestCase {
     }
 
     /**
+     * This data set is intended to be ingested through the various setters and getters, therefor the expected
+     * output is not provided in this data, the expected output needs to be generated for the different testing
+     * conditions since setting through a Single vs Series vs DistinctSeries will have different outcomes.  This
+     * extends the setGetDataProvider in that multiple key value pares are tested as input and for the output.
+     *
+     * @return array
+     */
+    public function multiKeyDataProvider()
+    {
+        return array(
+            /* Test 1 */
+            array('test' => array(
+                array(
+                    'key'    => 'Key1',
+                    'values' => array('Value1')
+                ),
+
+                array(
+                    'key'    => 'Key2',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value2', 'Value1')
+                ),
+
+                array(
+                    'key'    => 'Key3',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value4', 'Value5')
+                ),
+
+                array(
+                    'key'    => 'Key4',
+                    'values' => array('Value4', 'Value4', 'Value4', 'Value4', 'Value4')
+                ),
+            )
+            ),
+            /* Test 2 */
+            array('test' => array(
+                array(
+                    'key'    => 'Key1',
+                    'values' => array('Value1')
+                ),
+
+                array(
+                    'key'    => 'Key2',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value2', 'Value1')
+                ),
+
+                array(
+                    'key'    => 'Key3',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value4', 'Value5')
+                ),
+
+                array(
+                    'key'    => 'Key4',
+                    'values' => array('Value4', 'Value4', 'Value4', 'Value4', 'Value4')
+                ),
+            )
+            )
+        );
+    }
+
+
+    /**
      * This is the setUp method, this will create the testing database connected to a local SQLite instanced in
      * memory, there should be no residual tables or test data to clean up from this class.
      *

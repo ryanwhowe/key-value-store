@@ -27,24 +27,25 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\Manager::create
      * @covers \RyanWHowe\KeyValueStore\Manager::createTable
      * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getAllKeys()
+    public function getAllKeys(array $testSet)
     {
-        $test = Single::create('SingleValueGetAllKeys', self::$connection);
-        $test->set('key1', 'value1');
-        $test->set('key1', 'value2');
-        $test->set('key2', 'value2');
-        $test->set('key2', 'value3');
-        $test->set('key3', 'value3');
-        $test->set('key3', 'value4');
-        $test->set('key4', 'value4');
-        $test->set('key4', 'value5');
-        $test->set('key5', 'value5');
-        $test->set('key5', 'value6');
-        $expected = array('key1', 'key2', 'key3', 'key4', 'key5');
-        $result = $test->getAllKeys();
+        $single = Single::create('SingleValueGetAllKeys', self::$connection);
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $single->set($key, $value);
+            }
+            $expected[] = $key;
+            $result = $single->getAllKeys();
+            $this->assertEquals($expected, $result);
+        }
+        $result = $single->getAllKeys();
         $this->assertEquals($expected, $result);
     }
 
@@ -62,25 +63,24 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getGroupingSet()
+    public function getGroupingSet($testSet)
     {
         $testGroup = 'SingleValueGetGroupingSet';
-
-        $expected = array(
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value1'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value6')
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($expected as $item) {
-            $singleValue->set($item['key'], $item['value']);
+        $expected = array();
+        $expected_value = '';
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $singleValue->set($key, $value);
+                $expected_value = $value; // we expect the last value set
+            }
+            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
