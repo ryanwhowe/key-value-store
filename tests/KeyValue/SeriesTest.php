@@ -43,7 +43,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $value), $result);
+        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value), $result);
     }
 
     /**
@@ -59,33 +59,31 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSet
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getSet()
+    public function getSet($testSet)
     {
         $testGrouping = 'SeriesValueGetSet';
-        $key = 'key1';
-        $expected = array();
         $seriesValue = Series::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value2',
-            'value1'
-        );
-        foreach ($testSet as $item) {
-            $seriesValue->set($key, $item);
-            $expected[] = array('grouping' => $testGrouping, 'key' => $key, 'value' => $item);
-        }
-        $result = $seriesValue->getSet($key);
-        foreach ($result as &$item) {
-            unset($item['last_update']);
-            unset($item['value_created']);
-        }
 
-        $this->assertEquals($expected, $result);
+        foreach ($testSet as $item) {
+            $expected = array();
+            $key = $item['key'];
+            foreach ($item['values'] as $value) {
+                $seriesValue->set($key, $value);
+                $expected[] = array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value);
+            }
+
+            $result = $seriesValue->getSet($key);
+            foreach ($result as &$item) {
+                unset($item['last_update']);
+                unset($item['value_created']);
+            }
+            $this->assertEquals($expected, $result);
+        }
     }
 
     /**
@@ -115,7 +113,7 @@ class SeriesTest extends DataTransaction {
             foreach ($test['values'] as $value) {
                 $seriesValue->set($key, $value);
             }
-            $expected[] = $key;
+            $expected[] = \strtolower($key);
             $result = $seriesValue->getAllKeys();
             $this->assertEquals($expected, $result);
         }
@@ -174,7 +172,7 @@ class SeriesTest extends DataTransaction {
                 $singleValue->set($key, $value);
                 $expected_value = $value; // we expect the last value set
             }
-            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
+            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -219,7 +217,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $value), $result);
+        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value), $result);
     }
 
     /**

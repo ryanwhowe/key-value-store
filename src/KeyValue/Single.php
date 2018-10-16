@@ -75,7 +75,7 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }

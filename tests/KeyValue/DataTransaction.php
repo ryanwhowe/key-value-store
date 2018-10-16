@@ -162,6 +162,60 @@ abstract class DataTransaction extends TestCase {
         );
     }
 
+    /**
+     * @return array
+     */
+    public function nonUniqueKeyDataProvider()
+    {
+        return array(
+            /* Test 1 */
+            array('test' => array(
+                array(
+                    'key'    => 'Key1',
+                    'values' => array('Value1')
+                ),
+
+                array(
+                    'key'    => 'KEy1',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value2', 'Value1')
+                ),
+
+                array(
+                    'key'    => 'KeY1',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value4', 'Value5')
+                ),
+
+                array(
+                    'key'    => 'KEY1',
+                    'values' => array('Value4', 'Value4', 'Value4', 'Value4', 'Value4')
+                ),
+            )
+            ),
+            /* Test 2 */
+            array('test' => array(
+                array(
+                    'key'    => 'KeyValue',
+                    'values' => array('Value1')
+                ),
+
+                array(
+                    'key'    => 'Keyvalue',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value2', 'Value1')
+                ),
+
+                array(
+                    'key'    => 'keyvalue',
+                    'values' => array('Value1', 'Value2', 'Value3', 'Value4', 'Value5')
+                ),
+
+                array(
+                    'key'    => 'KEYVALUE',
+                    'values' => array('Value4', 'Value4', 'Value4', 'Value4', 'Value4')
+                ),
+            )
+            )
+        );
+    }
 
     /**
      * This is the setUp method, this will create the testing database connected to a local SQLite instanced in
