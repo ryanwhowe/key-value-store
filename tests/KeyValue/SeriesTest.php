@@ -26,23 +26,17 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      */
-    public function set()
+    public function set($key, $values)
     {
-        $testGrouping = 'SeriesValueSet';
-        $key = 'key1';
+        $testGrouping = 'SeriesValueGet';
         $value = '';
         $seriesValue = Series::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value3',
-            'value1',
-            'anotherValue'
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $seriesValue->set($key, $item);
             $value = $item; //the expected output is the last value that was set in the series
         }
@@ -107,23 +101,24 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function GetAllKeys()
+    public function GetAllKeys($testSet)
     {
         $seriesValue = Series::create('SeriesValueGetAllKeys', self::$connection);
-        $seriesValue->set('key1', 'value1');
-        $seriesValue->set('key1', 'value2');
-        $seriesValue->set('key2', 'value2');
-        $seriesValue->set('key2', 'value3');
-        $seriesValue->set('key3', 'value3');
-        $seriesValue->set('key3', 'value4');
-        $seriesValue->set('key4', 'value4');
-        $seriesValue->set('key4', 'value5');
-        $seriesValue->set('key5', 'value5');
-        $seriesValue->set('key5', 'value6');
-        $expected = array('key1', 'key2', 'key3', 'key4', 'key5');
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $seriesValue->set($key, $value);
+            }
+            $expected[] = $key;
+            $result = $seriesValue->getAllKeys();
+            $this->assertEquals($expected, $result);
+        }
         $result = $seriesValue->getAllKeys();
         $this->assertEquals($expected, $result);
     }
@@ -162,46 +157,27 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGroupingSet
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getGroupingSet()
+    public function getGroupingSet($testSet)
     {
         $testGroup = 'SeriesValueGetGroupingSet';
-
-        $testData = array(
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value1'),
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value6'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value7'),
-        );
-
-        $seriesValue = Series::create($testGroup, self::$connection);
-        $lastSet = array();
-        foreach ($testData as $item) {
-            $seriesValue->set($item['key'], $item['value']);
-            $lastSet[$item['key']] = $item['value'];
-        }
-
-        // the last set value for each key is the expected output
+        $singleValue = Series::create($testGroup, self::$connection);
         $expected = array();
-        foreach ($lastSet as $key => $value) {
-            $expected[] = array(
-                'grouping' => $testGroup,
-                'key'      => $key,
-                'value'    => $value
-            );
+        $expected_value = '';
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $singleValue->set($key, $value);
+                $expected_value = $value; // we expect the last value set
+            }
+            $expected[] = array('grouping' => $testGroup, 'key' => $key, 'value' => $expected_value);
         }
 
-        $result = $seriesValue->getGroupingSet();
+        $result = $singleValue->getGroupingSet();
 
         foreach ($result as &$item) {
             // We are removing the last_update, this is a timestamp and is not testable
@@ -225,24 +201,18 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function get()
+    public function get($key, $values)
     {
         $testGrouping = 'SeriesValueGet';
-        $key = 'key1';
         $value = '';
         $seriesValue = Series::create($testGrouping, self::$connection);
-        $testSet = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'otherValue'
-        );
-        foreach ($testSet as $item) {
+        foreach ($values as $item) {
             $seriesValue->set($key, $item);
             $value = $item; //the expected output is the last value that was set in the series
         }
@@ -250,31 +220,6 @@ class SeriesTest extends DataTransaction {
         unset($result['last_update']);
         unset($result['value_created']);
         $this->assertEquals(array('grouping' => $testGrouping, 'key' => $key, 'value' => $value), $result);
-    }
-
-    public function groupingTestProvider()
-    {
-        return array(
-            array('GroupName', 'GroupName', true),
-            array('GroupName1', 'GroupName1', true),
-            array('Group Name', 'Group_Name', true),
-            array('G r o u p N a m e ', 'G_r_o_u_p_N_a_m_e', true),
-            array(' GroupName', 'GroupName', true),
-            array(' GroupName ', 'GroupName', true),
-            array('GroupName 12', 'GroupName_12', true),
-            array(' G r o u p N a m e 1 2 ', 'G_r_o_u_p_N_a_m_e_1_2', true),
-            array('GroupName', 'GroupName', true),
-
-            array(' GroupName', ' GroupName', false),
-            array('GroupName1 ', 'GroupName1 ', false),
-            array('Group Name', 'Group Name', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-            array(' GroupName', ' GroupName', false),
-            array(' GroupName ', ' GroupName ', false),
-            array('GroupName 12', 'GroupName 12', false),
-            array(' G r o u p N a m e 1 2 ', ' G r o u p N a m e 1 2 ', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-        );
     }
 
     /**

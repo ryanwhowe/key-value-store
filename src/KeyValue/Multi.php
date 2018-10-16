@@ -46,7 +46,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
      * Get the record associated with the specific key, value pair, the most recent series value
      *
      * @param $key
-     * @return array
+     * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key)
