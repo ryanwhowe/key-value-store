@@ -162,7 +162,7 @@ class DistinctSeriesTest extends DataTransaction {
             $expected_value = $set_value;
         }
 
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $expected_value), $result);
+        $this->assertEquals(array('key' => \strtolower($key), 'value' => $expected_value), $result);
     }
 
     /**
@@ -202,7 +202,7 @@ class DistinctSeriesTest extends DataTransaction {
                 }
             }
             foreach ($expected_values as $values => $item) {
-                $expected[] = array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $values);
+                $expected[] = array('key' => \strtolower($key), 'value' => $values);
             }
             $result = $distinctSeries->getSet($key);
             // unset the timestamps, which will vary with time
@@ -229,6 +229,7 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
      * @throws \Exception
@@ -294,7 +295,7 @@ class DistinctSeriesTest extends DataTransaction {
             $expected_value = $set_value;
         }
 
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $expected_value), $result);
+        $this->assertEquals(array('key' => \strtolower($key), 'value' => $expected_value), $result);
     }
 
     /**

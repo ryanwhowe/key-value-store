@@ -15,6 +15,6 @@ This extends the key/value store in several ways
 Keys are forced to be case-insensitive
 
 #### To Do (1.0)
-- [ ] Remove the grouping column from the results, it is redundant
-- [ ] Expand the tests to test multiple value key grouping sets
-- [ ] Force the Keys to be case-insensitive
+- [x] Remove the grouping column from the results, it is redundant
+- [x] Expand the tests to test multiple value key grouping sets
+- [x] Force the Keys to be case-insensitive

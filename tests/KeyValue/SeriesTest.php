@@ -43,7 +43,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value), $result);
+        $this->assertEquals(array('key' => \strtolower($key), 'value' => $value), $result);
     }
 
     /**
@@ -74,7 +74,7 @@ class SeriesTest extends DataTransaction {
             $key = $item['key'];
             foreach ($item['values'] as $value) {
                 $seriesValue->set($key, $value);
-                $expected[] = array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value);
+                $expected[] = array('key' => \strtolower($key), 'value' => $value);
             }
 
             $result = $seriesValue->getSet($key);
@@ -217,7 +217,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('grouping' => $testGrouping, 'key' => \strtolower($key), 'value' => $value), $result);
+        $this->assertEquals(array('key' => \strtolower($key), 'value' => $value), $result);
     }
 
     /**

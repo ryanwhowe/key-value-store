@@ -54,7 +54,6 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         {
             $sql = "
             SELECT
-                `grouping`,
                 `key`,
                 `value`,
                 `last_update`
@@ -88,7 +87,6 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     {
         $sql = "
             SELECT
-                `grouping`,
                 `key`,
                 `value`,
                 `last_update`,
