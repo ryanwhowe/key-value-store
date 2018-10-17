@@ -63,6 +63,7 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
@@ -250,6 +251,19 @@ class SingleTest extends DataTransaction {
 
     /**
      * @test
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::update
      * @dataProvider nonUniqueKeyDataProvider
      * @throws \Exception
      */

@@ -59,7 +59,7 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
      * Query the database for a single value from a grouping
      *
      * @param $key
-     * @return array
+     * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key)
