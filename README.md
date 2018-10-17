@@ -1,4 +1,5 @@
-# php-keyvaluestore [![Build Status](https://travis-ci.com/ryanwhowe/php-keyvaluestore.svg?branch=master)](https://travis-ci.com/ryanwhowe/php-keyvaluestore)
+# php-keyvaluestore [![Build Status](https://travis-ci.com/ryanwhowe/php-keyvaluestore.svg?branch=master)](https://travis-ci.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
+
 This is a database backed key/value store setter and getter library with additional functionality
 
 This extends the key/value store in several ways
