@@ -1,4 +1,6 @@
-# php-keyvaluestore [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![Code Coverage](https://img.shields.io/badge/Code%20Coverage-100%25-brightgreen.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
+# php-keyvaluestore [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![Codecov branch](https://img.shields.io/codecov/c/ryanwhowe/php-keyvaluestore/master.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
+
+
 
 This is a database backed key/value store setter and getter library with additional functionality
 
