@@ -81,7 +81,7 @@ class SingleTest extends DataTransaction {
                 $singleValue->set($key, $value);
                 $expected_value = $value; // we expect the last value set
             }
-            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
+            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
