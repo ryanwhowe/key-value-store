@@ -267,9 +267,9 @@ class SingleTest extends DataTransaction {
      * @dataProvider nonUniqueKeyDataProvider
      * @throws \Exception
      */
-    public function uniqueKeys($testSet)
+    public function uniqueKeysCheck($testSet)
     {
-        $testGroup = 'SingleUniqueKeys';
+        $testGroup = 'SeriesUniqueKeys';
         $single = Single::create($testGroup, self::$connection);
         $expected = array();
         foreach ($testSet as $test) {
