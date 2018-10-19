@@ -128,7 +128,7 @@ abstract class KeyValue {
             ->setValue('`value`', '?')
             ->setValue('`value_created`', 'CURRENT_TIMESTAMP')
             ->setParameter(0, $this->getGrouping(), \PDO::PARAM_STR)
-            ->setParameter(1, $key, \PDO::PARAM_STR)
+            ->setParameter(1, \strtolower($key), \PDO::PARAM_STR)
             ->setParameter(2, $value, \PDO::PARAM_STR);
 
         $qb->execute();
@@ -146,7 +146,7 @@ abstract class KeyValue {
             ->where('`grouping` = :grouping')
             ->where('`key` = :key')
             ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR)
-            ->setParameter('key', $key, \PDO::PARAM_STR);
+            ->setParameter('key', \strtolower($key), \PDO::PARAM_STR);
         $qb->execute();
     }
 
@@ -167,7 +167,7 @@ abstract class KeyValue {
         $stmt = $this->connection->prepare($sql);
 
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         if(null !== $value){
             $stmt->bindValue(":value", $value, \PDO::PARAM_STR);
         }

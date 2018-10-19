@@ -27,24 +27,25 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\Manager::create
      * @covers \RyanWHowe\KeyValueStore\Manager::createTable
      * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getAllKeys()
+    public function getAllKeys(array $testSet)
     {
-        $test = Single::create('SingleValueGetAllKeys', self::$connection);
-        $test->set('key1', 'value1');
-        $test->set('key1', 'value2');
-        $test->set('key2', 'value2');
-        $test->set('key2', 'value3');
-        $test->set('key3', 'value3');
-        $test->set('key3', 'value4');
-        $test->set('key4', 'value4');
-        $test->set('key4', 'value5');
-        $test->set('key5', 'value5');
-        $test->set('key5', 'value6');
-        $expected = array('key1', 'key2', 'key3', 'key4', 'key5');
-        $result = $test->getAllKeys();
+        $single = Single::create('SingleValueGetAllKeys', self::$connection);
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $single->set($key, $value);
+            }
+            $expected[] = \strtolower($key);
+            $result = $single->getAllKeys();
+            $this->assertEquals($expected, $result);
+        }
+        $result = $single->getAllKeys();
         $this->assertEquals($expected, $result);
     }
 
@@ -62,25 +63,25 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getId
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider multiKeyDataProvider
+     * @param array $testSet
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function getGroupingSet()
+    public function getGroupingSet($testSet)
     {
         $testGroup = 'SingleValueGetGroupingSet';
-
-        $expected = array(
-            array('grouping' => $testGroup, 'key' => 'key1', 'value' => 'value1'),
-            array('grouping' => $testGroup, 'key' => 'key2', 'value' => 'value2'),
-            array('grouping' => $testGroup, 'key' => 'key3', 'value' => 'value3'),
-            array('grouping' => $testGroup, 'key' => 'key4', 'value' => 'value4'),
-            array('grouping' => $testGroup, 'key' => 'key5', 'value' => 'value5'),
-            array('grouping' => $testGroup, 'key' => 'key6', 'value' => 'value6')
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($expected as $item) {
-            $singleValue->set($item['key'], $item['value']);
+        $expected = array();
+        $expected_value = '';
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $singleValue->set($key, $value);
+                $expected_value = $value; // we expect the last value set
+            }
+            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -138,26 +139,18 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function set()
+    public function set($key, array $values)
     {
         $testGroup = 'SingleValueSet';
-        $key = 'Key1';
         $expected = '';
-        $testValues = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'value6',
-            'value3'
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($testValues as $value) {
+        foreach ($values as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
         }
@@ -165,34 +158,6 @@ class SingleTest extends DataTransaction {
         $result = $singleValue->get($key);
 
         $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * @return array
-     */
-    public function groupingTestProvider()
-    {
-        return array(
-            array('GroupName', 'GroupName', true),
-            array('GroupName1', 'GroupName1', true),
-            array('Group Name', 'Group_Name', true),
-            array('G r o u p N a m e ', 'G_r_o_u_p_N_a_m_e', true),
-            array(' GroupName', 'GroupName', true),
-            array(' GroupName ', 'GroupName', true),
-            array('GroupName 12', 'GroupName_12', true),
-            array(' G r o u p N a m e 1 2 ', 'G_r_o_u_p_N_a_m_e_1_2', true),
-            array('GroupName', 'GroupName', true),
-
-            array(' GroupName', ' GroupName', false),
-            array('GroupName1 ', 'GroupName1 ', false),
-            array('Group Name', 'Group Name', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-            array(' GroupName', ' GroupName', false),
-            array(' GroupName ', ' GroupName ', false),
-            array('GroupName 12', 'GroupName 12', false),
-            array(' G r o u p N a m e 1 2 ', ' G r o u p N a m e 1 2 ', false),
-            array('G r o u p N a m e ', 'G r o u p N a m e ', false),
-        );
     }
 
     /**
@@ -234,26 +199,18 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function get()
+    public function get($key, array $values)
     {
         $testGroup = 'SingleValueGet';
-        $key = 'Key1';
         $expected = '';
-        $testValues = array(
-            'value1',
-            'value2',
-            'value3',
-            'value4',
-            'value5',
-            'value6',
-            'value3'
-        );
-
         $singleValue = Single::create($testGroup, self::$connection);
-        foreach ($testValues as $value) {
+        foreach ($values as $value) {
             $singleValue->set($key, $value);
             $expected = $value;  // the last set value is what we expect out
         }
@@ -279,6 +236,7 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
      */
     public function delete()
     {
@@ -289,5 +247,40 @@ class SingleTest extends DataTransaction {
         $singleValue->delete($key);
         $result = $singleValue->get($key);
         $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::set
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::update
+     * @dataProvider nonUniqueKeyDataProvider
+     * @throws \Exception
+     */
+    public function uniqueKeys($testSet)
+    {
+        $testGroup = 'SingleUniqueKeys';
+        $single = Single::create($testGroup, self::$connection);
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $single->set($key, $value);
+            }
+            $expected[\strtolower($key)] = true;
+            $result = $single->getAllKeys();
+            $this->assertEquals(array_keys($expected), $result);
+        }
+
     }
 }

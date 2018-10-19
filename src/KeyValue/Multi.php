@@ -37,7 +37,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
@@ -46,7 +46,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
      * Get the record associated with the specific key, value pair, the most recent series value
      *
      * @param $key
-     * @return array
+     * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key)
@@ -54,7 +54,6 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         {
             $sql = "
             SELECT
-                `grouping`,
                 `key`,
                 `value`,
                 `last_update`
@@ -68,7 +67,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-            $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+            $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
             $stmt->execute();
             $return = $stmt->fetch();
             if (is_array($return)) {
@@ -88,7 +87,6 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     {
         $sql = "
             SELECT
-                `grouping`,
                 `key`,
                 `value`,
                 `last_update`,
@@ -103,7 +101,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
     }

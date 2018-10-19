@@ -1,7 +1,4 @@
 # php-keyvaluestore [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![Codecov branch](https://img.shields.io/codecov/c/ryanwhowe/php-keyvaluestore/master.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
-
-
-
 This is a database backed key/value store setter and getter library with additional functionality
 
 This extends the key/value store in several ways
@@ -14,12 +11,10 @@ This extends the key/value store in several ways
   - This allows for only recording when a value changes as a logging method with the ability to retrieve the last value 
   set or the series
 
-#### To Do
-- [x] Split out the different types that can be stored
-- [x] Complete the code coverage documentation on the tests
-- [ ] Expand the tests to test multiple value key grouping sets
-- [ ] Documentation!
-- [ ] Test crossing types and see what happens (use one for setting and another for getting)
-- [x] Settle on a response for the setters
-- [x] Settle on a response for the getters
-- [x] Split out the Series functionality to an abstract base for the Series and Distinct classes
+### warning
+Keys are forced to be case-insensitive
+
+#### To Do (1.0)
+- [x] Remove the grouping column from the results, it is redundant
+- [x] Expand the tests to test multiple value key grouping sets
+- [x] Force the Keys to be case-insensitive
