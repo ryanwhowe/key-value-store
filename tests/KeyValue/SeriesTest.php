@@ -43,7 +43,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('key' => \strtolower($key), 'value' => $value), $result);
+        $this->assertEquals(array('value' => $value), $result);
     }
 
     /**
@@ -74,7 +74,7 @@ class SeriesTest extends DataTransaction {
             $key = $item['key'];
             foreach ($item['values'] as $value) {
                 $seriesValue->set($key, $value);
-                $expected[] = array('key' => \strtolower($key), 'value' => $value);
+                $expected[] = array('value' => $value);
             }
 
             $result = $seriesValue->getSet($key);
@@ -172,7 +172,7 @@ class SeriesTest extends DataTransaction {
                 $singleValue->set($key, $value);
                 $expected_value = $value; // we expect the last value set
             }
-            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
+            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -217,7 +217,7 @@ class SeriesTest extends DataTransaction {
         $result = $seriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        $this->assertEquals(array('key' => \strtolower($key), 'value' => $value), $result);
+        $this->assertEquals(array('value' => $value), $result);
     }
 
     /**
@@ -273,5 +273,40 @@ class SeriesTest extends DataTransaction {
         $seriesValue->delete($key);
         $result = $seriesValue->get($key);
         $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Series::update
+     * @dataProvider nonUniqueKeyDataProvider
+     * @throws \Exception
+     */
+    public function uniqueKeysCheck($testSet)
+    {
+        $testGroup = 'SingleUniqueKeys';
+        $series = Series::create($testGroup, self::$connection);
+        $expected = array();
+        foreach ($testSet as $test) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
+                $series->set($key, $value);
+            }
+            $expected[\strtolower($key)] = true;
+            $result = $series->getAllKeys();
+            $this->assertEquals(array_keys($expected), $result);
+        }
+
     }
 }
