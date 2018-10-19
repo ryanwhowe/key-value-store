@@ -99,7 +99,6 @@ abstract class KeyValue {
     {
         $sql = "
         SELECT 
-            :grouping as `grouping`,
             keyset.`key`,
             (SELECT `value` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY last_update DESC, id DESC LIMIT 1) as `value`,
             (SELECT `last_update` FROM `ValueStore` WHERE grouping = :grouping and `key` = keyset.`key` ORDER BY last_update DESC, id DESC LIMIT 1) as `last_update` 

@@ -106,8 +106,7 @@ class DistinctSeriesTest extends DataTransaction {
             }
             $expected_values = \array_keys($expected_values);
             $expected_value = end($expected_values);
-            $expected[] = array('grouping' => $testGroup, 'key' => \strtolower($key), 'value' => $expected_value);
-
+            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
         }
 
         $result = $seriesValue->getGroupingSet();
