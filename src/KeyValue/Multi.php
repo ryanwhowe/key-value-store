@@ -97,7 +97,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
                 `grouping` = :grouping AND 
                 `key` = :key
             ORDER BY 
-                value_created DESC 
+                id ASC
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
