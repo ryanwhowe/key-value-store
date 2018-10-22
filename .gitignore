@@ -9,3 +9,9 @@
 
 # PhpStorm
 /.idea/
+
+# used in CI coverage testing
+/clover.xml
+
+# local phpunit configurations
+/phpunit.xml

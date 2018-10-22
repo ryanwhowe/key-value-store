@@ -15,7 +15,7 @@ before_script:
 - travis_retry composer install --no-interaction --prefer-source
 
 script:
-- vendor/bin/phpunit --configuration phpunit.xml tests
+- vendor/bin/phpunit --configuration phpunit.xml.dist tests
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
