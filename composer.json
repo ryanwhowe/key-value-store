@@ -1,5 +1,5 @@
 {
-    "name": "RyanWHowe/keyvaluestore",
+    "name": "RyanWHowe/key-value-store",
     "description": "A Key/Value storage setter and getter library with a database backend",
     "type": "library",
     "require": {
@@ -31,8 +31,7 @@
     "authors": [
         {
             "name": "Ryan W. Howe",
-            "email": "RyanWHowe@gmail.com"
+            "email": "ryanwhowe@gmail.com"
         }
-    ],
-    "minimum-stability": "stable"
+    ]
 }
