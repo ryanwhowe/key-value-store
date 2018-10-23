@@ -96,7 +96,7 @@ abstract class DataTransaction extends TestCase {
 
             array(
                 'key'    => 'Key4',
-                'values' => array('Value4', 'Value4', 'Value4', 'Value4', 'Value4')
+                'values' => array('Value3', 'Value3', 'Value3', 'Value1', 'Value3')
             ),
 
         );
