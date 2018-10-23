@@ -73,9 +73,10 @@ abstract class KeyValue {
     }
 
     /**
-     * Get all keys associated with the grouping that are stored in the database.
+     * Get all keys associated with the grouping that are stored in the database.  If no keys are present for the
+     * grouping then the method will return false;
      *
-     * @return array
+     * @return array|bool
      */
     public function getAllKeys()
     {
@@ -85,7 +86,11 @@ abstract class KeyValue {
             ->where('`grouping` = :grouping')
             ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR);
         $stmt = $qb->execute();
-        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        if (count($result) === 0) {
+            $result = false;
+        }
+        return $result;
     }
 
     /**

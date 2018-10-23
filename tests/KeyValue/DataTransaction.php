@@ -22,11 +22,11 @@ abstract class DataTransaction extends TestCase {
     /**
      * @var array The local SQLite memory database connection configuration array
      */
-    protected static $database_config = [
+    protected static $database_config = array(
         'dbname' => ':memory:',
         'host'   => 'localhost',
         'driver' => 'pdo_sqlite',
-    ];
+    );
 
     /**
      * @throws \Doctrine\DBAL\DBALException

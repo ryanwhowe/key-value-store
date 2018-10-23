@@ -283,4 +283,24 @@ class SingleTest extends DataTransaction {
         }
 
     }
+
+    /**
+     * @test
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @dataProvider groupingTestProvider
+     */
+    public function getAllKeysFalseCheck($testGroup, $expectedGroup, $expectedResult)
+    {
+        $distinctSeries = Single::create($testGroup, self::$connection);
+        $result = $distinctSeries->getAllKeys();
+        $this->assertFalse($result);
+    }
 }
