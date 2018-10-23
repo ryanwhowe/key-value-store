@@ -1,4 +1,4 @@
-**what Issue is this pull request refering to**
+**what Issue is this pull request referring to**
 Please link the issue using the #number reference 
 
 **Have The Tests Been Updated in any way?:** yes/no

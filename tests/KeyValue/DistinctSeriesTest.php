@@ -51,7 +51,7 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
-     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::get
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -133,7 +133,7 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
-     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @dataProvider setGetDataProvider
      * @param string $key
@@ -145,21 +145,17 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGrouping = 'DistinctSeriesValueGet';
         $expected_value = '';
-        $value = array();
+
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
-            if(!array_key_exists($item,$value)){
-                /* the last set distinct value needs to be captured */
-                $value[$item] = true;
-            }
+            /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
+            \sleep(1);
+            $expected_value = $item;
         }
         $result = $distinctSeriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        foreach ($value as $set_value=>$item) {
-            $expected_value = $set_value;
-        }
 
         $this->assertEquals(array('value' => $expected_value), $result);
     }
@@ -266,7 +262,7 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
-     * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @dataProvider setGetDataProvider
      * @param string $key
@@ -278,21 +274,16 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGrouping = 'DistinctSeriesValueSet';
         $expected_value = '';
-        $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
-            if(!array_key_exists($item,$value)){
-                /* the last set distinct value needs to be captured */
-                $value[$item] = true;
-            }
+            /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
+            \sleep(1);
+            $expected_value = $item;
         }
         $result = $distinctSeriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        foreach ($value as $set_value=>$item) {
-            $expected_value = $set_value;
-        }
 
         $this->assertEquals(array('value' => $expected_value), $result);
     }
@@ -371,5 +362,53 @@ class DistinctSeriesTest extends DataTransaction {
         $distinctSeries = DistinctSeries::create($testGroup, self::$connection);
         $result = $distinctSeries->getAllKeys();
         $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getId
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::getLastUnique
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Multi::get
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
+     * @dataProvider setGetDataProvider
+     * @param string $key
+     * @param array $values
+     * @throws \Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getLastUniqueCheck($key, $values)
+    {
+        $testGrouping = 'DistinctSeriesValueGet';
+        $expected_value = '';
+        $value = array();
+        $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
+        foreach ($values as $item) {
+            $distinctSeriesValue->set($key, $item);
+            /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
+            \sleep(1);
+            if ( ! array_key_exists($item, $value)) {
+                /* the last set distinct value needs to be captured */
+                $value[$item] = true;
+            }
+        }
+        $result = $distinctSeriesValue->getLastUnique($key);
+        unset($result['last_update']);
+        unset($result['value_created']);
+        foreach ($value as $set_value => $item) {
+            $expected_value = $set_value;
+        }
+
+        $this->assertEquals(array('value' => $expected_value), $result);
     }
 }

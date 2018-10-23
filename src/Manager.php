@@ -72,6 +72,10 @@ class Manager {
               `value_created` DATETIME NOT NULL 
             );";
         $this->connection->exec($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS `grkeix` ON `ValueStore` (`grouping`,`key`)";
+        $this->connection->exec($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS `laupgrkeix` ON `ValueStore` (`last_update`, `grouping`, `key`)";
+        $this->connection->exec($sql);
     }
 
     /**

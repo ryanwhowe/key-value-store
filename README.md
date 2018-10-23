@@ -1,4 +1,5 @@
-# php-keyvaluestore [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![Codecov branch](https://img.shields.io/codecov/c/ryanwhowe/php-keyvaluestore/master.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
+# php-keyvaluestore [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/php-keyvaluestore/all.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore) [![Codecov](https://img.shields.io/codecov/c/github/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/php-keyvaluestore)
+
 This is a database backed key/value store setter and getter library with additional functionality
 
 This extends the key/value store in several ways
@@ -11,10 +12,8 @@ This extends the key/value store in several ways
   - This allows for only recording when a value changes as a logging method with the ability to retrieve the last value 
   set or the series
 
-### warning
-Keys are forced to be case-insensitive
+Please read the [wiki](https://github.com/ryanwhowe/php-keyvaluestore/wiki) for additional documentation on the classes and methods.
 
-#### To Do (1.0)
-- [x] Remove the grouping column from the results, it is redundant
-- [x] Expand the tests to test multiple value key grouping sets
-- [x] Force the Keys to be case-insensitive
+Please add any [issues](https://github.com/ryanwhowe/php-keyvaluestore/issues) for anything that does not appear to work as expected.
+
+Please feel free to ask any questions if you think that this could be something useful to you.

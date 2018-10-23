@@ -19,6 +19,7 @@
         </whitelist>
     </filter>
     <logging>
+        <!-- Use for travis-ci and codecov for reporting code coverage changes -->
         <log type="coverage-clover" target="clover.xml"/>
     </logging>
 </phpunit>
