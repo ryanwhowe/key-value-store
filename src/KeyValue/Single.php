@@ -30,9 +30,9 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
         $tableId = $this->getId($key);
         if ($tableId) {
             $this->update($tableId, $value);
-        } else {
-            $this->insert($key, $value);
+            return;
         }
+        $this->insert($key, $value);
     }
 
     /**

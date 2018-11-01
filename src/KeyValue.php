@@ -134,7 +134,6 @@ abstract class KeyValue {
             ->setParameter(0, $this->getGrouping(), \PDO::PARAM_STR)
             ->setParameter(1, \strtolower($key), \PDO::PARAM_STR)
             ->setParameter(2, $value, \PDO::PARAM_STR);
-
         $queryBuilder->execute();
     }
 

@@ -23,9 +23,9 @@ class DistinctSeries extends Multi {
         $tableId = $this->getId($key, $value);
         if ($tableId) {
             $this->update($tableId);
-        } else {
-            $this->insert($key, $value);
+            return;
         }
+        $this->insert($key, $value);
     }
 
     /**
