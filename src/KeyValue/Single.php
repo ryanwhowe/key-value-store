@@ -2,8 +2,6 @@
 /**
  * This file contains the definition for the Single class
  *
- * @author Ryan Howe
- * @since  2018-10-11
  */
 
 namespace RyanWHowe\KeyValueStore\KeyValue;
@@ -11,18 +9,25 @@ namespace RyanWHowe\KeyValueStore\KeyValue;
 /**
  * Class Single
  *
- * The single value class is the classic key/value store usage.  A key will have a value set, which can be overwritten
- * or deleted.
+ * The single value class is the classic key/value store usage.  A key will have a
+ * value set, which can be overwritten or deleted.
  *
  * @package RyanWHowe\KeyValueStore\KeyValue
+ * @author  Ryan Howe <ryanwhowe@gmail.com>
+ * @license MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link    https://github.com/ryanwhowe/key-value-store/
  */
-class Single extends \RyanWHowe\KeyValueStore\KeyValue {
+class Single extends \RyanWHowe\KeyValueStore\KeyValue
+{
 
     /**
-     * Set a new single grouping/key's value, if it is present, otherwise create a new entry for it
+     * Set a new single grouping/key's value, if it is present, otherwise create a
+     * new entry for it
      *
-     * @param $key
-     * @param $value
+     * @param string $key   The key to set
+     * @param string $value The value to set
+     *
+     * @return void
      * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
@@ -38,8 +43,10 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
     /**
      * Update a single grouping/key combination's value
      *
-     * @param $tableId
-     * @param $value
+     * @param integer $tableId The id value for the table to use
+     * @param string  $value   The value to set
+     *
+     * @return void
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function update($tableId, $value)
@@ -58,7 +65,8 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
     /**
      * Query the database for a single value from a grouping
      *
-     * @param $key
+     * @param string $key The key to retrieve from the database
+     *
      * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
