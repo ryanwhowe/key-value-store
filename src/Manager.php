@@ -44,13 +44,11 @@ class Manager {
     /**
      * Get all groupings that are stored in the database
      *
-     * @param \Doctrine\DBAL\Connection $connection
      * @return array
      * @throws \Exception
      */
     public function getAllGroupings()
     {
-
         $sql = "SELECT DISTINCT `grouping` FROM `ValueStore`";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();

@@ -14,15 +14,15 @@ class DistinctSeries extends Multi {
      * Set a distinct series value, this will check to see if the key, value pair has already been submitted,
      * if not it will insert the value, if so it will issue an update which will update the last_updated timestamp
      *
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param string $value
      * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {
-        $id = $this->getId($key, $value);
-        if ($id) {
-            $this->update($id);
+        $tableId = $this->getId($key, $value);
+        if ($tableId) {
+            $this->update($tableId);
         } else {
             $this->insert($key, $value);
         }
@@ -31,10 +31,10 @@ class DistinctSeries extends Multi {
     /**
      * Update the last_update for a unique value already in existence
      *
-     * @param $id
+     * @param $tableId
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function update($id)
+    protected function update($tableId)
     {
         $sql = "UPDATE `ValueStore`
                 SET 
@@ -42,7 +42,7 @@ class DistinctSeries extends Multi {
                 WHERE
                     `id` = :id ;";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', $tableId, \PDO::PARAM_INT);
         $stmt->execute();
     }
 

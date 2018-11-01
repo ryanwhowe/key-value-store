@@ -15,7 +15,6 @@ class Series extends Multi {
      *
      * @param $key
      * @param $value
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {

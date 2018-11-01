@@ -80,12 +80,12 @@ abstract class KeyValue {
      */
     public function getAllKeys()
     {
-        $qb = $this->connection->createQueryBuilder();
-        $qb->select('DISTINCT key')
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select('DISTINCT key')
             ->from('ValueStore')
             ->where('`grouping` = :grouping')
             ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt = $qb->execute();
+        $stmt = $queryBuilder->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         if (count($result) === 0) {
             $result = false;
@@ -125,8 +125,8 @@ abstract class KeyValue {
      */
     protected function insert($key, $value)
     {
-        $qb = $this->connection->createQueryBuilder();
-        $qb->insert('ValueStore')
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->insert('ValueStore')
             ->setValue('`grouping`', '?')
             ->setValue('`key`', '?')
             ->setValue('`value`', '?')
@@ -135,7 +135,7 @@ abstract class KeyValue {
             ->setParameter(1, \strtolower($key), \PDO::PARAM_STR)
             ->setParameter(2, $value, \PDO::PARAM_STR);
 
-        $qb->execute();
+        $queryBuilder->execute();
     }
 
     /**
@@ -145,20 +145,21 @@ abstract class KeyValue {
      */
     public function delete($key)
     {
-        $qb = $this->connection->createQueryBuilder();
-        $qb->delete('ValueStore')
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->delete('ValueStore')
             ->where('`grouping` = :grouping')
             ->where('`key` = :key')
             ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR)
             ->setParameter('key', \strtolower($key), \PDO::PARAM_STR);
-        $qb->execute();
+        $queryBuilder->execute();
     }
 
     /**
      * Get the id value for a specific grouping, key combo, also as a check to see if the data already
      * exists in the table
      *
-     * @param  $key
+     * @param string $key
+     * @param null|string $value
      * @return bool|string
      * @throws \Doctrine\DBAL\DBALException
      */

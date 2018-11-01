@@ -20,7 +20,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     /**
      * Get the first value_created for a series collection
      *
-     * @param $key
+     * @param string $key
      * @return bool|string
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -45,7 +45,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     /**
      * Get the record associated with the specific key, value pair, the most recent series value
      *
-     * @param $key
+     * @param string $key
      * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -62,7 +62,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
                 `grouping` = :grouping AND 
                 `key` = :key
             ORDER BY 
-                id DESC 
+                `id` DESC 
         ;";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
@@ -78,7 +78,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -95,7 +95,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
                 `grouping` = :grouping AND 
                 `key` = :key
             ORDER BY 
-                id ASC
+                `id` ASC
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);

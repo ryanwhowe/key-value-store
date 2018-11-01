@@ -27,9 +27,9 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
      */
     public function set($key, $value)
     {
-        $id = $this->getId($key);
-        if ($id) {
-            $this->update($id, $value);
+        $tableId = $this->getId($key);
+        if ($tableId) {
+            $this->update($tableId, $value);
         } else {
             $this->insert($key, $value);
         }
@@ -38,11 +38,11 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
     /**
      * Update a single grouping/key combination's value
      *
-     * @param $id
+     * @param $tableId
      * @param $value
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function update($id, $value)
+    protected function update($tableId, $value)
     {
         $sql = "UPDATE `ValueStore` 
                 SET 
@@ -50,7 +50,7 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue {
                 WHERE
                     `id` = :id ;";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', $tableId, \PDO::PARAM_INT);
         $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
         $stmt->execute();
     }
