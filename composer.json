@@ -1,5 +1,5 @@
 {
-    "name": "RyanWHowe/key-value-store",
+    "name": "ryanwhowe/key-value-store",
     "description": "A Key/Value storage setter and getter library with a database backend",
     "type": "library",
     "require": {
@@ -15,8 +15,8 @@
     "require-dev": {
         "phpunit/phpunit": "^5.0",
         "ext-sqlite3": "*",
-      "symfony/var-dumper": "^2.1",
-      "phpmd/phpmd": "^2.6"
+        "symfony/var-dumper": "^2.1",
+        "phpmd/phpmd": "^2.6"
     },
     "autoload": {
         "psr-4": {
