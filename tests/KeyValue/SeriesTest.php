@@ -39,7 +39,7 @@ class SeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \sleep(1);
+            \usleep(10000);
             $value = $item; //the expected output is the last value that was set in the series
         }
         $result = $seriesValue->get($key);
@@ -71,10 +71,10 @@ class SeriesTest extends DataTransaction {
         $testGrouping = 'SeriesValueGetSet';
         $seriesValue = Series::create($testGrouping, self::$connection);
 
-        foreach ($testSet as $item) {
+        foreach ($testSet as $test) {
             $expected = array();
-            $key = $item['key'];
-            foreach ($item['values'] as $value) {
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
                 $seriesValue->set($key, $value);
                 $expected[] = array('value' => $value);
             }
@@ -103,10 +103,9 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function GetAllKeys($testSet)
+    public function getAllKeys($testSet)
     {
         $seriesValue = Series::create('SeriesValueGetAllKeys', self::$connection);
         $expected = array();
@@ -167,14 +166,14 @@ class SeriesTest extends DataTransaction {
         $testGroup = 'SeriesValueGetGroupingSet';
         $singleValue = Series::create($testGroup, self::$connection);
         $expected = array();
-        $expected_value = '';
+        $expectedValue = '';
         foreach ($testSet as $test) {
             $key = $test['key'];
             foreach ($test['values'] as $value) {
                 $singleValue->set($key, $value);
-                $expected_value = $value; // we expect the last value set
+                $expectedValue = $value; // we expect the last value set
             }
-            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
+            $expected[] = array('key' => \strtolower($key), 'value' => $expectedValue);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -215,7 +214,7 @@ class SeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \sleep(1);
+            \usleep(10000);
             $value = $item; //the expected output is the last value that was set in the series
         }
         $result = $seriesValue->get($key);
@@ -226,18 +225,21 @@ class SeriesTest extends DataTransaction {
 
     /**
      * @test
-     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
-     * @covers \RyanWHowe\KeyValueStore\Manager::create
-     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
-     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @param $testGroup
+     * @param $expectedGroup
+     * @param $expectedResult
      * @throws \Exception
      */
-    public function GetGrouping($testGroup, $expectedGroup, $expectedResult)
+    public function getGrouping($testGroup, $expectedGroup, $expectedResult)
     {
         $singleValue = Series::create($testGroup, self::$connection);
         $resultGroup = $singleValue->getGrouping();
@@ -294,6 +296,7 @@ class SeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\Series::set
      * @dataProvider nonUniqueKeyDataProvider
+     * @param $testSet
      * @throws \Exception
      */
     public function uniqueKeysCheck($testSet)
@@ -325,8 +328,9 @@ class SeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @throws \Exception
      */
-    public function getAllKeysFalseCheck($testGroup, $expectedGroup, $expectedResult)
+    public function getAllKeysFalseCheck($testGroup)
     {
         $distinctSeries = Series::create($testGroup, self::$connection);
         $result = $distinctSeries->getAllKeys();

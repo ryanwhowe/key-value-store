@@ -2,8 +2,6 @@
 /**
  * This file contains the definition for the Multi class
  *
- * @author Ryan Howe
- * @since  2018-10-12
  */
 
 namespace RyanWHowe\KeyValueStore\KeyValue;
@@ -14,13 +12,18 @@ namespace RyanWHowe\KeyValueStore\KeyValue;
  * This is the base abstract class that the multiple value classes extend from
  *
  * @package RyanWHowe\KeyValueStore\KeyValue
+ * @author  Ryan Howe <ryanwhowe@gmail.com>
+ * @license MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link    https://github.com/ryanwhowe/key-value-store/
  */
-abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
+abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue
+{
 
     /**
      * Get the first value_created for a series collection
      *
-     * @param $key
+     * @param string $key The key to get the series creation date for
+     *
      * @return bool|string
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -43,42 +46,44 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
     }
 
     /**
-     * Get the record associated with the specific key, value pair, the most recent series value
+     * Get the record associated with the specific key, value pair, the most recent
+     * series value
      *
-     * @param $key
+     * @param string $key The key to get the last set value for
+     *
      * @return bool|array
      * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key)
     {
-        {
-            $sql = "
-            SELECT
-                `value`,
-                `last_update`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-            ORDER BY 
-                id DESC 
-        ;";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-            $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-            $stmt->execute();
-            $return = $stmt->fetch();
-            if (is_array($return)) {
-                $return['value_created'] = $this->getSeriesCreateDate($key);
-            }
-            return $return;
+        $sql = "
+        SELECT
+            `value`,
+            `last_update`
+        FROM 
+            `ValueStore`
+        WHERE
+            `grouping` = :grouping AND 
+            `key` = :key
+        ORDER BY 
+            `id` DESC 
+    ;";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
+        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt->execute();
+        $return = $stmt->fetch();
+        if (is_array($return)) {
+            $return['value_created'] = $this->getSeriesCreateDate($key);
         }
-
+        return $return;
     }
 
     /**
-     * @param $key
+     * Return the series set of values for the provided key
+     *
+     * @param string $key The key to get the series values for
+     *
      * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -95,7 +100,7 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue {
                 `grouping` = :grouping AND 
                 `key` = :key
             ORDER BY 
-                id ASC
+                `id` ASC
         ;";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);

@@ -74,14 +74,14 @@ class SingleTest extends DataTransaction {
         $testGroup = 'SingleValueGetGroupingSet';
         $singleValue = Single::create($testGroup, self::$connection);
         $expected = array();
-        $expected_value = '';
+        $expectedValue = '';
         foreach ($testSet as $test) {
             $key = $test['key'];
             foreach ($test['values'] as $value) {
                 $singleValue->set($key, $value);
-                $expected_value = $value; // we expect the last value set
+                $expectedValue = $value; // we expect the last value set
             }
-            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
+            $expected[] = array('key' => \strtolower($key), 'value' => $expectedValue);
         }
 
         $result = $singleValue->getGroupingSet();
@@ -162,18 +162,21 @@ class SingleTest extends DataTransaction {
 
     /**
      * @test
-     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
-     * @covers \RyanWHowe\KeyValueStore\Manager::create
-     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
-     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @param $testGroup
+     * @param $expectedGroup
+     * @param $expectedResult
      * @throws \Exception
      */
-    public function GetGrouping($testGroup, $expectedGroup, $expectedResult)
+    public function getGrouping($testGroup, $expectedGroup, $expectedResult)
     {
         $singleValue = Single::create($testGroup, self::$connection);
         $resultGroup = $singleValue->getGrouping();
@@ -265,6 +268,8 @@ class SingleTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::set
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::update
      * @dataProvider nonUniqueKeyDataProvider
+     * @param $testSet
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function uniqueKeysCheck($testSet)
@@ -296,8 +301,10 @@ class SingleTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @param $testGroup
+     * @throws \Exception
      */
-    public function getAllKeysFalseCheck($testGroup, $expectedGroup, $expectedResult)
+    public function getAllKeysFalseCheck($testGroup)
     {
         $distinctSeries = Single::create($testGroup, self::$connection);
         $result = $distinctSeries->getAllKeys();

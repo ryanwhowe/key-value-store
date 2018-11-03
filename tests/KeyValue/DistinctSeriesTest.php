@@ -14,18 +14,21 @@ class DistinctSeriesTest extends DataTransaction {
 
     /**
      * @test
-     * @covers \RyanWHowe\KeyValueStore\Manager::__construct
-     * @covers \RyanWHowe\KeyValueStore\Manager::create
-     * @covers \RyanWHowe\KeyValueStore\Manager::createTable
-     * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::__construct
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::create
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
-     * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
+     * @covers       \RyanWHowe\KeyValueStore\Manager::create
+     * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
+     * @covers       \RyanWHowe\KeyValueStore\Manager::dropTable
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::__construct
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
+     * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @param $testGroup
+     * @param $expectedGroup
+     * @param $expectedResult
      * @throws \Exception
      */
-    public function GetGrouping($testGroup, $expectedGroup, $expectedResult)
+    public function getGrouping($testGroup, $expectedGroup, $expectedResult)
     {
         $singleValue = DistinctSeries::create($testGroup, self::$connection);
         $resultGroup = $singleValue->getGrouping();
@@ -95,18 +98,18 @@ class DistinctSeriesTest extends DataTransaction {
 
         $seriesValue = DistinctSeries::create($testGroup, self::$connection);
         $expected = array();
-        $expected_values = array();
+        $expectedValues = array();
         foreach ($testSet as $item) {
             $key = $item['key'];
             foreach ($item['values'] as $value) {
                 $seriesValue->set($key, $value);
-                if ( ! array_key_exists($value, $expected_values)) {
-                    $expected_values[$value] = true;
+                if ( ! array_key_exists($value, $expectedValues)) {
+                    $expectedValues[$value] = true;
                 }
             }
-            $expected_values = \array_keys($expected_values);
-            $expected_value = end($expected_values);
-            $expected[] = array('key' => \strtolower($key), 'value' => $expected_value);
+            $expectedValues = \array_keys($expectedValues);
+            $expectedValue = end($expectedValues);
+            $expected[] = array('key' => \strtolower($key), 'value' => $expectedValue);
         }
 
         $result = $seriesValue->getGroupingSet();
@@ -144,20 +147,20 @@ class DistinctSeriesTest extends DataTransaction {
     public function get($key, $values)
     {
         $testGrouping = 'DistinctSeriesValueGet';
-        $expected_value = '';
+        $expectedValue = '';
 
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
             \sleep(1);
-            $expected_value = $item;
+            $expectedValue = $item;
         }
         $result = $distinctSeriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
 
-        $this->assertEquals(array('value' => $expected_value), $result);
+        $this->assertEquals(array('value' => $expectedValue), $result);
     }
 
     /**
@@ -186,17 +189,17 @@ class DistinctSeriesTest extends DataTransaction {
 
         $distinctSeries = DistinctSeries::create($testGrouping, self::$connection);
 
-        foreach ($testSet as $item) {
+        foreach ($testSet as $test) {
             $expected = array();
-            $expected_values = array();
-            $key = $item['key'];
-            foreach ($item['values'] as $value) {
+            $expectedValues = array();
+            $key = $test['key'];
+            foreach ($test['values'] as $value) {
                 $distinctSeries->set($key, $value);
-                if ( ! array_key_exists($value, $expected_values)) {
-                    $expected_values[$value] = true;
+                if ( ! array_key_exists($value, $expectedValues)) {
+                    $expectedValues[$value] = true;
                 }
             }
-            foreach ($expected_values as $values => $item) {
+            foreach ($expectedValues as $values => $item) {
                 $expected[] = array('value' => $values);
             }
             $result = $distinctSeries->getSet($key);
@@ -273,19 +276,19 @@ class DistinctSeriesTest extends DataTransaction {
     public function set($key, $values)
     {
         $testGrouping = 'DistinctSeriesValueSet';
-        $expected_value = '';
+        $expectedValue = '';
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
             \sleep(1);
-            $expected_value = $item;
+            $expectedValue = $item;
         }
         $result = $distinctSeriesValue->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
 
-        $this->assertEquals(array('value' => $expected_value), $result);
+        $this->assertEquals(array('value' => $expectedValue), $result);
     }
 
     /**
@@ -325,6 +328,8 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @dataProvider nonUniqueKeyDataProvider
+     * @param $testSet
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function uniqueKeysCheck($testSet)
@@ -356,8 +361,10 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @dataProvider groupingTestProvider
+     * @param $testGroup
+     * @throws \Exception
      */
-    public function getAllKeysFalseCheck($testGroup, $expectedGroup, $expectedResult)
+    public function getAllKeysFalseCheck($testGroup)
     {
         $distinctSeries = DistinctSeries::create($testGroup, self::$connection);
         $result = $distinctSeries->getAllKeys();
@@ -390,13 +397,13 @@ class DistinctSeriesTest extends DataTransaction {
     public function getLastUniqueCheck($key, $values)
     {
         $testGrouping = 'DistinctSeriesValueGet';
-        $expected_value = '';
+        $expectedValue = '';
         $value = array();
         $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \sleep(1);
+            \usleep(10000);
             if ( ! array_key_exists($item, $value)) {
                 /* the last set distinct value needs to be captured */
                 $value[$item] = true;
@@ -405,10 +412,10 @@ class DistinctSeriesTest extends DataTransaction {
         $result = $distinctSeriesValue->getLastUnique($key);
         unset($result['last_update']);
         unset($result['value_created']);
-        foreach ($value as $set_value => $item) {
-            $expected_value = $set_value;
+        foreach ($value as $setValue => $item) {
+            $expectedValue = $setValue;
         }
 
-        $this->assertEquals(array('value' => $expected_value), $result);
+        $this->assertEquals(array('value' => $expectedValue), $result);
     }
 }
