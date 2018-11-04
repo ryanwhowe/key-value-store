@@ -200,21 +200,18 @@ abstract class KeyValue
      */
     protected function getId($key, $value = null)
     {
-        $sql = "
-            SELECT `id` 
-            FROM `ValueStore` 
-            WHERE `grouping` = :grouping AND `key` = :key ";
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select('id')
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->setParameter('grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter('key', \strtolower($key), \PDO::PARAM_STR);
         if (null !== $value) {
-            $sql .= ' AND `value` = :value';
+            $queryBuilder->andWhere('value = :value');
+            $queryBuilder->setParameter("value", $value, \PDO::PARAM_STR);
         }
-        $stmt = $this->connection->prepare($sql);
-
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        if (null !== $value) {
-            $stmt->bindValue(":value", $value, \PDO::PARAM_STR);
-        }
-        $stmt->execute();
+        $stmt = $queryBuilder->execute();
 
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }

@@ -51,15 +51,13 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue
      */
     protected function update($tableId, $value)
     {
-        $sql = "UPDATE `ValueStore` 
-                SET 
-                    `value` = :value
-                WHERE
-                    `id` = :id ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':id', $tableId, \PDO::PARAM_INT);
-        $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->update('ValueStore')
+            ->set('value', ':value')
+            ->where('id = :id')
+            ->setParameter('value', $value, \PDO::PARAM_STR)
+            ->setParameter('id', $tableId, \PDO::PARAM_INT);
+        $queryBuilder->execute();
     }
 
     /**
@@ -72,19 +70,14 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue
      */
     public function get($key)
     {
-        $sql = "
-            SELECT
-                `value`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select('value')
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt = $queryBuilder->execute();
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
 }

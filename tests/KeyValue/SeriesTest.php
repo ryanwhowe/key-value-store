@@ -39,7 +39,7 @@ class SeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(10000);
+            \sleep(1);
             $value = $item; //the expected output is the last value that was set in the series
         }
         $result = $seriesValue->get($key);
@@ -214,7 +214,7 @@ class SeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(10000);
+            \sleep(1);
             $value = $item; //the expected output is the last value that was set in the series
         }
         $result = $seriesValue->get($key);

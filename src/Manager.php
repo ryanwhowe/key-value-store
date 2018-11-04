@@ -54,9 +54,10 @@ class Manager
      */
     public function getAllGroupings()
     {
-        $sql = "SELECT DISTINCT `grouping` FROM `ValueStore`";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select('DISTINCT grouping')
+            ->from('ValueStore');
+        $stmt = $queryBuilder->execute();
         return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 

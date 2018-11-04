@@ -29,19 +29,14 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue
      */
     protected function getSeriesCreateDate($key)
     {
-        $sql = "
-            SELECT
-                MIN(`value_created`)
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select('MIN(value_created)')
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt = $queryBuilder->execute();
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
 
@@ -56,22 +51,15 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue
      */
     public function get($key)
     {
-        $sql = "
-        SELECT
-            `value`,
-            `last_update`
-        FROM 
-            `ValueStore`
-        WHERE
-            `grouping` = :grouping AND 
-            `key` = :key
-        ORDER BY 
-            `id` DESC 
-    ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select(array('value', 'last_update'))
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->orderBy('id', 'DESC')
+            ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt = $queryBuilder->execute();
         $return = $stmt->fetch();
         if (is_array($return)) {
             $return['value_created'] = $this->getSeriesCreateDate($key);
@@ -89,23 +77,15 @@ abstract class Multi extends \RyanWHowe\KeyValueStore\KeyValue
      */
     public function getSet($key)
     {
-        $sql = "
-            SELECT
-                `value`,
-                `last_update`,
-                `value_created`
-            FROM 
-                `ValueStore`
-            WHERE
-                `grouping` = :grouping AND 
-                `key` = :key
-            ORDER BY 
-                `id` ASC
-        ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select(array('value', 'last_update', 'value_created'))
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->orderBy('id', 'ASC')
+            ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt = $queryBuilder->execute();
         return $stmt->fetchAll();
     }
 
