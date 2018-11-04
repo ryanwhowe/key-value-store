@@ -47,14 +47,12 @@ class DistinctSeries extends Multi
      */
     protected function update($tableId)
     {
-        $sql = "UPDATE `ValueStore`
-                SET 
-                    `last_update` = CURRENT_TIMESTAMP
-                WHERE
-                    `id` = :id ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':id', $tableId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->update('ValueStore')
+            ->set('last_update', 'CURRENT_TIMESTAMP')
+            ->where('id = :id')
+            ->setParameter(':id', $tableId, \PDO::PARAM_INT);
+        $queryBuilder->execute();
     }
 
     /**
@@ -68,22 +66,15 @@ class DistinctSeries extends Multi
      */
     public function get($key)
     {
-        $sql = "
-        SELECT
-            `value`,
-            `last_update`
-        FROM 
-            `ValueStore`
-        WHERE
-            `grouping` = :grouping AND 
-            `key` = :key
-        ORDER BY 
-            `last_update` DESC
-    ;";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->bindValue(':key', \strtolower($key), \PDO::PARAM_STR);
-        $stmt->execute();
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->select(array('value', 'last_update'))
+            ->from('ValueStore')
+            ->where('grouping = :grouping')
+            ->andWhere('key = :key')
+            ->orderBy('last_update', 'DESC')
+            ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
+            ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
+        $stmt = $queryBuilder->execute();
         $return = $stmt->fetch();
         if (is_array($return)) {
             $return['value_created'] = $this->getSeriesCreateDate($key);
