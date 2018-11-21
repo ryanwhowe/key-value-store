@@ -1,4 +1,5 @@
-# key-value-store [![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/key-value-store.svg)](https://github.com/ryanwhowe/key-value-store) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/key-value-store/all.svg)](https://github.com/ryanwhowe/key-value-store) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/key-value-store.svg)](https://github.com/ryanwhowe/key-value-store) [![Codecov](https://img.shields.io/codecov/c/github/ryanwhowe/php-keyvaluestore.svg)](https://github.com/ryanwhowe/key-value-store)
+# key-value-store 
+[![Travis (.com)](https://img.shields.io/travis/com/ryanwhowe/key-value-store.svg)](https://github.com/ryanwhowe/key-value-store) [![GitHub (pre-)release](https://img.shields.io/github/release/ryanwhowe/key-value-store/all.svg)](https://github.com/ryanwhowe/key-value-store) [![GitHub issues](https://img.shields.io/github/issues-raw/ryanwhowe/key-value-store.svg)](https://github.com/ryanwhowe/key-value-store) [![codecov](https://codecov.io/gh/ryanwhowe/key-value-store/branch/master/graph/badge.svg)](https://codecov.io/gh/ryanwhowe/key-value-store)
 
 This is a database backed key/value store setter and getter library with additional functionality
 
