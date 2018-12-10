@@ -153,7 +153,7 @@ class DistinctSeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \sleep(1);
+            \usleep(1000000);
             $expectedValue = $item;
         }
         $result = $distinctSeriesValue->get($key);
@@ -281,7 +281,7 @@ class DistinctSeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \sleep(1);
+            \usleep(1000000);
             $expectedValue = $item;
         }
         $result = $distinctSeriesValue->get($key);
@@ -403,7 +403,7 @@ class DistinctSeriesTest extends DataTransaction {
         foreach ($values as $item) {
             $distinctSeriesValue->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(10000);
+            \usleep(1000000);
             if ( ! array_key_exists($item, $value)) {
                 /* the last set distinct value needs to be captured */
                 $value[$item] = true;

@@ -43,7 +43,6 @@ class DistinctSeries extends Multi
      * @param integer $tableId The id value to update the timestamp on
      *
      * @return void
-     * @throws \Doctrine\DBAL\DBALException
      */
     protected function update($tableId)
     {

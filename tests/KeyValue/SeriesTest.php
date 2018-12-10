@@ -13,6 +13,11 @@ use RyanWHowe\KeyValueStore\KeyValue\Series;
 class SeriesTest extends DataTransaction {
 
     /**
+     * Test for the set function
+     *
+     * @param string $key    The key value that will be utilized
+     * @param array  $values The value stored with the corresponding key
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -26,10 +31,11 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider setGetDataProvider
-     * @param string $key
-     * @param array $values
+     *
      * @throws \Exception
+     * @return void
      */
     public function set($key, $values)
     {
@@ -38,9 +44,12 @@ class SeriesTest extends DataTransaction {
         $seriesValue = Series::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
-            /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(10000);
-            $value = $item; //the expected output is the last value that was set in the series
+            /*
+            The sleep is needed to have the sqlite database see a difference in
+            timestamp values
+            */
+            \usleep(1000000);
+            $value = $item; //the expected output is the last value that was set
         }
         $result = $seriesValue->get($key);
         unset($result['last_update']);
@@ -49,6 +58,10 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * Test for the getSet funciton
+     *
+     * @param array $testSet The testset that will be used
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -61,10 +74,13 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSet
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider multiKeyDataProvider
-     * @param array $testSet
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return void
      */
     public function getSet($testSet)
     {
@@ -89,6 +105,10 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * Test for the getAllKeys function
+     *
+     * @param array $testSet The testset array used
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -101,9 +121,12 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider multiKeyDataProvider
-     * @param array $testSet
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function getAllKeys($testSet)
     {
@@ -123,6 +146,8 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * The test for the create method
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -132,7 +157,10 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::create
      * @covers \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function create()
     {
@@ -140,10 +168,17 @@ class SeriesTest extends DataTransaction {
         $seriesValue = Series::create($testGroupName, self::$connection);
         $resultGroupName = $seriesValue->getGrouping();
         $this->assertEquals($testGroupName, $resultGroupName);
-        $this->assertInstanceOf('RyanWHowe\KeyValueStore\KeyValue\Series', $seriesValue);
+        $this->assertInstanceOf(
+            'RyanWHowe\KeyValueStore\KeyValue\Series',
+            $seriesValue
+        );
     }
 
     /**
+     * Test the getGroupingSet function
+     *
+     * @param array $testSet
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -156,10 +191,13 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::getGroupingSet
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider multiKeyDataProvider
-     * @param array $testSet
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return void
      */
     public function getGroupingSet($testSet)
     {
@@ -173,13 +211,16 @@ class SeriesTest extends DataTransaction {
                 $singleValue->set($key, $value);
                 $expectedValue = $value; // we expect the last value set
             }
-            $expected[] = array('key' => \strtolower($key), 'value' => $expectedValue);
+            $expected[] = array(
+                'key'   => \strtolower($key),
+                'value' => $expectedValue
+            );
         }
 
         $result = $singleValue->getGroupingSet();
 
         foreach ($result as &$item) {
-            // We are removing the last_update, this is a timestamp and is not testable
+            // We are removing the last_update, the timestamp and is not testable
             unset($item['last_update']);
         }
 
@@ -187,6 +228,11 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * Test the get method
+     *
+     * @param string $key    The key to associated the value to
+     * @param array  $values The value to be associated with the key
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -200,11 +246,13 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::getSeriesCreateDate
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider setGetDataProvider
-     * @param string $key
-     * @param array $values
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return void
      */
     public function get($key, $values)
     {
@@ -213,9 +261,12 @@ class SeriesTest extends DataTransaction {
         $seriesValue = Series::create($testGrouping, self::$connection);
         foreach ($values as $item) {
             $seriesValue->set($key, $item);
-            /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(10000);
-            $value = $item; //the expected output is the last value that was set in the series
+            /*
+            The sleep is needed to have the sqlite database see a difference in
+            timestamp values
+            */
+            \usleep(1000000);
+            $value = $item; //the expected output is the last value that was set
         }
         $result = $seriesValue->get($key);
         unset($result['last_update']);
@@ -224,6 +275,12 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * Test the getGrouping method
+     *
+     * @param string  $testGroup      The test group name input
+     * @param string  $expectedGroup  The test group output name
+     * @param boolean $expectedResult The test group expected result
+     *
      * @test
      * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers       \RyanWHowe\KeyValueStore\Manager::create
@@ -233,11 +290,12 @@ class SeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     *
      * @dataProvider groupingTestProvider
-     * @param $testGroup
-     * @param $expectedGroup
-     * @param $expectedResult
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function getGrouping($testGroup, $expectedGroup, $expectedResult)
     {
@@ -251,6 +309,8 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * The delete method test
+     *
      * @test
      * @covers \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers \RyanWHowe\KeyValueStore\Manager::create
@@ -264,14 +324,25 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return void
      */
     public function delete()
     {
         $testGroup = 'SeriesValueDelete';
         $key = 'KeyValue';
-        $values = array('value1', 'value2', 'value3', 'value3', 'value2', 'value2', 'value1');
+        $values = array(
+            'value1',
+            'value2',
+            'value3',
+            'value3',
+            'value2',
+            'value2',
+            'value1'
+        );
         $seriesValue = Series::create($testGroup, self::$connection);
         foreach ($values as $value) {
             $seriesValue->set($key, $value);
@@ -282,6 +353,10 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * The unique keys check
+     *
+     * @param array $testSet The test array to process though
+     *
      * @test
      * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers       \RyanWHowe\KeyValueStore\Manager::create
@@ -295,9 +370,12 @@ class SeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getId
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\Series::set
+     *
      * @dataProvider nonUniqueKeyDataProvider
-     * @param $testSet
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function uniqueKeysCheck($testSet)
     {
@@ -317,6 +395,10 @@ class SeriesTest extends DataTransaction {
     }
 
     /**
+     * The getAllKeysFalseCheck method test
+     *
+     * @param string $testGroup the grouping name to test
+     *
      * @test
      * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers       \RyanWHowe\KeyValueStore\Manager::create
@@ -327,8 +409,12 @@ class SeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getAllKeys
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     *
      * @dataProvider groupingTestProvider
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function getAllKeysFalseCheck($testGroup)
     {
