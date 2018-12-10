@@ -1,5 +1,5 @@
 {
-    "name": "RyanWHowe/key-value-store",
+  "name": "ryanwhowe/key-value-store",
     "description": "A Key/Value storage setter and getter library with a database backend",
     "type": "library",
     "require": {

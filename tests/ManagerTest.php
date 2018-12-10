@@ -10,6 +10,7 @@ namespace Test;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use RyanWHowe\KeyValueStore\KeyValue\Single;
 use RyanWHowe\KeyValueStore\Manager;
 
 class ManagerTest extends \PHPUnit\Framework\TestCase {
@@ -88,13 +89,13 @@ class ManagerTest extends \PHPUnit\Framework\TestCase {
         $test = Manager::create(self::$connection);
         $test->createTable();
         $expected = array();
-        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test1', self::$connection);
+        $singleValue = Single::create('Test1', self::$connection);
         $expected[] = 'Test1';
         $singleValue->set('Key', 'Value');
-        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test2', self::$connection);
+        $singleValue = Single::create('Test2', self::$connection);
         $expected[] = 'Test2';
         $singleValue->set('Key', 'Value');
-        $singleValue = \RyanWHowe\KeyValueStore\KeyValue\Single::create('Test3', self::$connection);
+        $singleValue = Single::create('Test3', self::$connection);
         $expected[] = 'Test3';
         $singleValue->set('Key', 'Value');
         $result = $test->getAllGroupings();
