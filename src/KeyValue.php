@@ -1,6 +1,14 @@
 <?php
 /**
  * This file contains the source code for the Store class
+ *
+ * PHP Version 5.3+
+ *
+ * @category File
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 
 namespace RyanWHowe\KeyValueStore;
@@ -12,8 +20,11 @@ namespace RyanWHowe\KeyValueStore;
  * will keep it's data separate from other stores through the use of the 'grouping'
  * term that is set at instantiation.
  *
- * @package RyanWHowe\KeyValueStore
- * @author  Ryan W Howe <ryanwhowe@gmail.com>
+ * @category Class
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 abstract class KeyValue
 {
@@ -111,39 +122,22 @@ abstract class KeyValue
      * with the key.
      *
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getGroupingSet()
     {
-        $sql = "
-        SELECT 
-            keyset.`key`,
-            (
-                SELECT `value` 
-                FROM `ValueStore` 
-                WHERE grouping = :grouping AND `key` = keyset.`key` 
-                ORDER BY last_update DESC, id DESC 
-                LIMIT 1
-                ) AS `value`,
-            (
-                SELECT `last_update` 
-                FROM `ValueStore` 
-                WHERE grouping = :grouping AND `key` = keyset.`key` 
-                ORDER BY last_update DESC, id DESC 
-                LIMIT 1
-            ) AS `last_update` 
-        FROM
-            (
-                SELECT DISTINCT `key` 
-                FROM `ValueStore` 
-                WHERE `grouping` = :grouping
-            ) AS keyset
-        ;
-        ";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':grouping', $this->getGrouping(), \PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        $result = array();
+        $keys = $this->getAllKeys();
+        foreach ($keys as $key) {
+            $result[] = array_merge(
+                array
+                (
+                    'key' => $key
+                ),
+                $this->get($key)
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -162,7 +156,8 @@ abstract class KeyValue
             ->setValue('`grouping`', '?')
             ->setValue('`key`', '?')
             ->setValue('`value`', '?')
-            ->setValue('`value_created`', 'CURRENT_TIMESTAMP')
+            ->setValue('last_update', 'strftime(\'%Y-%m-%d %H:%M:%f\',\'now\')')
+            ->setValue('`value_created`', 'strftime(\'%Y-%m-%d %H:%M:%f\',\'now\')')
             ->setParameter(0, $this->getGrouping(), \PDO::PARAM_STR)
             ->setParameter(1, \strtolower($key), \PDO::PARAM_STR)
             ->setParameter(2, $value, \PDO::PARAM_STR);
@@ -195,8 +190,6 @@ abstract class KeyValue
      * @param null|string $value The value to get try and get an id for
      *
      * @return bool|string
-     *
-     * @throws \Doctrine\DBAL\DBALException
      */
     protected function getId($key, $value = null)
     {
@@ -215,4 +208,23 @@ abstract class KeyValue
 
         return $stmt->fetch(\PDO::FETCH_COLUMN);
     }
+
+    /**
+     * Get the value associated with the passed Key reference
+     *
+     * @param string $key The key used to associate to the underlying value
+     *
+     * @return bool|array
+     */
+    public abstract function get($key);
+
+    /**
+     * Set the value for the passed key reference
+     *
+     * @param string $key   The key used to associate to the underlying value
+     * @param string $value The associated value to set
+     *
+     * @return void
+     */
+    public abstract function set($key, $value);
 }

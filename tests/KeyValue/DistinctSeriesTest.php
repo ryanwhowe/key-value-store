@@ -13,7 +13,14 @@ use RyanWHowe\KeyValueStore\KeyValue\DistinctSeries;
 class DistinctSeriesTest extends DataTransaction {
 
     /**
+     * Description
+     *
+     * @param string $testGroup      The provided Test Group Name
+     * @param string $expectedGroup  The expected Result of the output
+     * @param string $expectedResult The expected assertion result
+     *
      * @test
+     *
      * @covers       \RyanWHowe\KeyValueStore\Manager::__construct
      * @covers       \RyanWHowe\KeyValueStore\Manager::create
      * @covers       \RyanWHowe\KeyValueStore\Manager::createTable
@@ -22,16 +29,17 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::create
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::formatGrouping
      * @covers       \RyanWHowe\KeyValueStore\KeyValue::getGrouping
+     *
      * @dataProvider groupingTestProvider
-     * @param $testGroup
-     * @param $expectedGroup
-     * @param $expectedResult
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public function getGrouping($testGroup, $expectedGroup, $expectedResult)
     {
-        $singleValue = DistinctSeries::create($testGroup, self::$connection);
-        $resultGroup = $singleValue->getGrouping();
+        $distinctSeries = DistinctSeries::create($testGroup, self::$connection);
+        $resultGroup = $distinctSeries->getGrouping();
         if ($expectedResult) {
             $this->assertEquals($expectedGroup, $resultGroup);
         } else {
@@ -62,7 +70,15 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGroup = 'SeriesValueDelete';
         $key = 'KeyValue';
-        $values = array('value1', 'value2', 'value3', 'value3', 'value2', 'value2', 'value1');
+        $values = array(
+            'value1',
+            'value2',
+            'value3',
+            'value3',
+            'value2',
+            'value2',
+            'value1'
+        );
         $distinctSeries = DistinctSeries::create($testGroup, self::$connection);
         foreach ($values as $value) {
             $distinctSeries->set($key, $value);
@@ -96,27 +112,25 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGroup = 'DistinctSeriesValueGetGroupingSet';
 
-        $seriesValue = DistinctSeries::create($testGroup, self::$connection);
+        $distinctSeries = DistinctSeries::create($testGroup, self::$connection);
         $expected = array();
-        $expectedValues = array();
         foreach ($testSet as $item) {
             $key = $item['key'];
             foreach ($item['values'] as $value) {
-                $seriesValue->set($key, $value);
-                if ( ! array_key_exists($value, $expectedValues)) {
-                    $expectedValues[$value] = true;
-                }
+                $distinctSeries->set($key, $value);
+                \usleep(1000);
+                $expectedValue = $value; // we expect the last value set
             }
-            $expectedValues = \array_keys($expectedValues);
-            $expectedValue = end($expectedValues);
+
             $expected[] = array('key' => \strtolower($key), 'value' => $expectedValue);
         }
 
-        $result = $seriesValue->getGroupingSet();
+        $result = $distinctSeries->getGroupingSet();
 
         foreach ($result as &$item) {
             // We are removing the last_update, this is a timestamp and is not testable
             unset($item['last_update']);
+            unset($item['value_created']);
         }
 
         $this->assertEquals($expected, $result);
@@ -149,14 +163,14 @@ class DistinctSeriesTest extends DataTransaction {
         $testGrouping = 'DistinctSeriesValueGet';
         $expectedValue = '';
 
-        $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
+        $distinctSeries = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
-            $distinctSeriesValue->set($key, $item);
+            $distinctSeries->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(1000000);
+            \usleep(1000);
             $expectedValue = $item;
         }
-        $result = $distinctSeriesValue->get($key);
+        $result = $distinctSeries->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
 
@@ -277,14 +291,14 @@ class DistinctSeriesTest extends DataTransaction {
     {
         $testGrouping = 'DistinctSeriesValueSet';
         $expectedValue = '';
-        $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
+        $distinctSeries = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
-            $distinctSeriesValue->set($key, $item);
+            $distinctSeries->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(1000000);
+            \usleep(1000);
             $expectedValue = $item;
         }
-        $result = $distinctSeriesValue->get($key);
+        $result = $distinctSeries->get($key);
         unset($result['last_update']);
         unset($result['value_created']);
 
@@ -306,10 +320,11 @@ class DistinctSeriesTest extends DataTransaction {
     public function create()
     {
         $testGroupName = 'DistinctSeriesValueCreate';
-        $seriesValue = DistinctSeries::create($testGroupName, self::$connection);
-        $resultGroupName = $seriesValue->getGrouping();
+        $distinctSeries = DistinctSeries::create($testGroupName, self::$connection);
+        $resultGroupName = $distinctSeries->getGrouping();
         $this->assertEquals($testGroupName, $resultGroupName);
-        $this->assertInstanceOf('RyanWHowe\KeyValueStore\KeyValue\DistinctSeries', $seriesValue);
+        $this->assertInstanceOf('RyanWHowe\KeyValueStore\KeyValue\DistinctSeries',
+            $distinctSeries);
     }
 
     /**
@@ -399,17 +414,17 @@ class DistinctSeriesTest extends DataTransaction {
         $testGrouping = 'DistinctSeriesValueGet';
         $expectedValue = '';
         $value = array();
-        $distinctSeriesValue = DistinctSeries::create($testGrouping, self::$connection);
+        $distinctSeries = DistinctSeries::create($testGrouping, self::$connection);
         foreach ($values as $item) {
-            $distinctSeriesValue->set($key, $item);
+            $distinctSeries->set($key, $item);
             /* The sleep is needed to have the sqlite database see a difference in timestamp values*/
-            \usleep(1000000);
+            \usleep(1000);
             if ( ! array_key_exists($item, $value)) {
                 /* the last set distinct value needs to be captured */
                 $value[$item] = true;
             }
         }
-        $result = $distinctSeriesValue->getLastUnique($key);
+        $result = $distinctSeries->getLastUnique($key);
         unset($result['last_update']);
         unset($result['value_created']);
         foreach ($value as $setValue => $item) {

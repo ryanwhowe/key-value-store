@@ -2,6 +2,13 @@
 /**
  * This file contains the definition for the Single class
  *
+ * PHP Version 5.3+
+ *
+ * @category File
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 
 namespace RyanWHowe\KeyValueStore\KeyValue;
@@ -12,10 +19,11 @@ namespace RyanWHowe\KeyValueStore\KeyValue;
  * The single value class is the classic key/value store usage.  A key will have a
  * value set, which can be overwritten or deleted.
  *
- * @package RyanWHowe\KeyValueStore\KeyValue
- * @author  Ryan Howe <ryanwhowe@gmail.com>
- * @license MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
- * @link    https://github.com/ryanwhowe/key-value-store/
+ * @category Class
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store/
  */
 class Single extends \RyanWHowe\KeyValueStore\KeyValue
 {
@@ -28,7 +36,6 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue
      * @param string $value The value to set
      *
      * @return void
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {
@@ -69,13 +76,13 @@ class Single extends \RyanWHowe\KeyValueStore\KeyValue
     public function get($key)
     {
         $queryBuilder = $this->connection->createQueryBuilder();
-        $queryBuilder->select('value')
+        $queryBuilder->select(array('value', 'last_update', 'value_created'))
             ->from('ValueStore')
             ->where('grouping = :grouping')
             ->andWhere('key = :key')
             ->setParameter(':grouping', $this->getGrouping(), \PDO::PARAM_STR)
             ->setParameter(':key', \strtolower($key), \PDO::PARAM_STR);
         $stmt = $queryBuilder->execute();
-        return $stmt->fetch(\PDO::FETCH_COLUMN);
+        return $stmt->fetch();
     }
 }
