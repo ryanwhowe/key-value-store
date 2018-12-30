@@ -1,6 +1,14 @@
 <?php
 /**
  * This file contains the definition for the DistinctSeries class
+ *
+ * PHP Version 5.3+
+ *
+ * @category File
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 
 namespace RyanWHowe\KeyValueStore\KeyValue;
@@ -8,12 +16,13 @@ namespace RyanWHowe\KeyValueStore\KeyValue;
 /**
  * Class DistinctSeries
  *
- * @package RyanWHowe\KeyValueStore\KeyValue
- * @author  Ryan Howe <ryanwhowe@gmail.com>
- * @license MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
- * @link    https://github.com/ryanwhowe/key-value-store/
+ * @category Class
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
-class DistinctSeries extends Multi
+class DistinctSeries extends Series
 {
 
     /**
@@ -25,7 +34,6 @@ class DistinctSeries extends Multi
      * @param string $value The value to set
      *
      * @return void
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, $value)
     {
@@ -43,13 +51,12 @@ class DistinctSeries extends Multi
      * @param integer $tableId The id value to update the timestamp on
      *
      * @return void
-     * @throws \Doctrine\DBAL\DBALException
      */
     protected function update($tableId)
     {
         $queryBuilder = $this->connection->createQueryBuilder();
         $queryBuilder->update('ValueStore')
-            ->set('last_update', 'CURRENT_TIMESTAMP')
+            ->set('last_update', 'strftime(\'%Y-%m-%d %H:%M:%f\',\'now\')')
             ->where('id = :id')
             ->setParameter(':id', $tableId, \PDO::PARAM_INT);
         $queryBuilder->execute();
@@ -62,7 +69,6 @@ class DistinctSeries extends Multi
      * @param string $key The key to retrieve the last set value for
      *
      * @return bool|array
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key)
     {
@@ -90,7 +96,6 @@ class DistinctSeries extends Multi
      * @param string $key The key to retrieve the last unique value for
      *
      * @return array|bool
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getLastUnique($key)
     {

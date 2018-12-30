@@ -2,8 +2,13 @@
 /**
  * This file contains the definition for the Manager class
  *
- * @author Ryan Howe <ryanwhowe@gmail.com>
- * @since  2018-10-11
+ * PHP Version 5.3+
+ *
+ * @category File
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 
 namespace RyanWHowe\KeyValueStore;
@@ -11,8 +16,11 @@ namespace RyanWHowe\KeyValueStore;
 /**
  * Class Manager
  *
- * @package RyanWHowe\KeyValueStore
- * @author  Ryan W Howe <ryanwhowe@gmail.com>
+ * @category Class
+ * @package  RyanWHowe\KeyValueStore
+ * @author   Ryan W Howe <ryanwhowe@gmail.com>
+ * @license  MIT https://github.com/ryanwhowe/key-value-store/blob/master/LICENSE
+ * @link     https://github.com/ryanwhowe/key-value-store
  */
 class Manager
 {
@@ -74,8 +82,8 @@ class Manager
               `grouping` VARCHAR(100) DEFAULT NULL,
               `key` VARCHAR(100) DEFAULT NULL,
               `value` VARCHAR(300) DEFAULT NULL,
-              `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              `value_created` DATETIME NOT NULL 
+              `last_update` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `value_created` TEXT NOT NULL 
             );";
         $this->connection->exec($sql);
         $sql = "
