@@ -77,7 +77,6 @@ class SeriesTest extends DataTransaction {
      *
      * @dataProvider multiKeyDataProvider
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      *
      * @return void
@@ -194,7 +193,6 @@ class SeriesTest extends DataTransaction {
      *
      * @dataProvider multiKeyDataProvider
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      *
      * @return void
@@ -250,7 +248,6 @@ class SeriesTest extends DataTransaction {
      *
      * @dataProvider setGetDataProvider
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      *
      * @return void
@@ -326,7 +323,6 @@ class SeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Multi::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Series::set
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      *
      * @return void

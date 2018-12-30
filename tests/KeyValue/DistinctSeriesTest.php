@@ -13,7 +13,7 @@ use RyanWHowe\KeyValueStore\KeyValue\DistinctSeries;
 class DistinctSeriesTest extends DataTransaction {
 
     /**
-     * Description
+     * Testing the getGrouping method
      *
      * @param string $testGroup      The provided Test Group Name
      * @param string $expectedGroup  The expected Result of the output
@@ -63,7 +63,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::set
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::get
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function delete()
@@ -105,7 +104,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function getGroupingSet($testSet)
@@ -156,7 +154,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @param string $key
      * @param array $values
      * @throws \Exception
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function get($key, $values)
     {
@@ -195,7 +192,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
      * @throws \Exception
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getSet($testSet)
     {
@@ -245,7 +241,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
      * @throws \Exception
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getAllKeys($testSet)
     {
@@ -344,7 +339,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\DistinctSeries::update
      * @dataProvider nonUniqueKeyDataProvider
      * @param $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function uniqueKeysCheck($testSet)
@@ -407,7 +401,6 @@ class DistinctSeriesTest extends DataTransaction {
      * @param string $key
      * @param array $values
      * @throws \Exception
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getLastUniqueCheck($key, $values)
     {

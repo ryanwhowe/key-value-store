@@ -29,7 +29,6 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\Manager::dropTable
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function getAllKeys(array $testSet)
@@ -66,7 +65,6 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::update
      * @dataProvider multiKeyDataProvider
      * @param array $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function getGroupingSet($testSet)
@@ -144,7 +142,6 @@ class SingleTest extends DataTransaction {
      * @param string $key
      * @param array $values
      * @throws \Exception
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function set($key, array $values)
     {
@@ -209,7 +206,6 @@ class SingleTest extends DataTransaction {
      * @dataProvider setGetDataProvider
      * @param string $key
      * @param array $values
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function get($key, array $values)
@@ -246,7 +242,6 @@ class SingleTest extends DataTransaction {
      * @covers \RyanWHowe\KeyValueStore\KeyValue::insert
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::get
      * @covers \RyanWHowe\KeyValueStore\KeyValue\Single::set
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function delete()
@@ -277,7 +272,6 @@ class SingleTest extends DataTransaction {
      * @covers       \RyanWHowe\KeyValueStore\KeyValue\Single::update
      * @dataProvider nonUniqueKeyDataProvider
      * @param $testSet
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function uniqueKeysCheck($testSet)
